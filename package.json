@@ -34,6 +34,7 @@
     "@types/react-dom": "^19",
     "@typescript-eslint/parser": "^8.40.0",
     "commitizen": "^4.3.1",
+    "cz-customizable": "^7.5.1",
     "eslint": "^9",
     "eslint-config-next": "15.5.0",
     "eslint-config-prettier": "^10.1.8",
@@ -48,5 +49,10 @@
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.7",
     "typescript": "^5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-customizable"
+    }
   }
 }

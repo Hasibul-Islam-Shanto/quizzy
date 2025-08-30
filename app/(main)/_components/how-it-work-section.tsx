@@ -76,11 +76,11 @@ const HowItWorkSection = () => {
                   <CardTitle className="text-xl">{step.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-center">
-                  <img
+                  {/* <img
                     src={step.image || '/placeholder.svg'}
                     alt={step.title}
                     className="mb-4 h-48 w-full rounded-lg object-cover"
-                  />
+                  /> */}
                   <CardDescription className="text-base leading-relaxed">
                     {step.description}
                   </CardDescription>

@@ -6,88 +6,70 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { BarChart3, BookOpen, Edit3, Share2 } from 'lucide-react';
-import { motion } from 'motion/react';
+import { Bot, Edit3, Share2, TrendingUp } from 'lucide-react';
 
 const features = [
   {
-    title: 'Easy Quiz Creation',
+    icon: Bot,
+    title: 'AI-Powered Generation',
     description:
-      'Build comprehensive quizzes with intuitive drag-and-drop interface and customizable question types.',
-    icon: BookOpen,
+      'Transform any topic or text into comprehensive quizzes with intelligent question generation and multiple choice options.',
   },
   {
+    icon: Edit3,
     title: 'Edit & Customize',
     description:
-      'Fine-tune questions, adjust difficulty levels, and personalize quizzes to match your teaching style.',
-    icon: Edit3,
+      'Fine-tune generated questions, adjust difficulty levels, and personalize content to match your teaching style.',
   },
   {
-    title: 'Easy Sharing',
-    description:
-      'Share quizzes instantly with students via links, QR codes, or integrate with your LMS.',
     icon: Share2,
+    title: 'Share with Students',
+    description:
+      'Instantly distribute quizzes to students with shareable links and track participation in real-time.',
   },
   {
-    title: 'Performance Tracking',
+    icon: TrendingUp,
+    title: 'Performance Analytics',
     description:
-      'Monitor student progress with detailed analytics and interactive leaderboards.',
-    icon: BarChart3,
+      'Monitor student progress with detailed analytics, leaderboards, and insights to improve learning outcomes.',
   },
 ];
 const FeatureSection = () => {
   return (
-    <section id="features" className="py-20">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="features" className="bg-background py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
-          <h2 className="text-foreground mb-4 text-3xl font-bold sm:text-4xl">
-            Everything You Need to Create Amazing Quizzes
+          <h2 className="text-foreground mb-4 text-3xl font-bold md:text-4xl">
+            Powerful Features for Modern Education
           </h2>
-          <p className="text-muted-foreground mx-auto max-w-2xl text-xl">
-            Powerful features designed to make quiz creation and management
-            effortless for educators.
+          <p className="text-muted-foreground mx-auto max-w-3xl text-xl">
+            Everything you need to create, share, and track engaging quizzes
+            that enhance learning experiences.
           </p>
         </div>
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={{
-            visible: {
-              transition: { staggerChildren: 0.18 },
-            },
-            hidden: {},
-          }}
-          className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
-        >
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {features.map((feature, index) => (
-            <motion.div
+            <Card
               key={index}
-              variants={{
-                hidden: { opacity: 0, y: 40 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              transition={{ duration: 0.5, ease: 'easeOut' }}
+              className="group bg-gradient-card shadow-card hover:shadow-elegant border-white/20 transition-all duration-300 ease-out hover:-translate-y-2"
             >
-              <Card className="group h-full border text-center transition-all duration-300 hover:border-purple-200 hover:shadow-xl dark:hover:border-purple-800">
-                <CardHeader>
-                  <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-purple-600 shadow-lg transition-all duration-300 group-hover:bg-purple-700">
-                    <feature.icon className="h-6 w-6 text-white" />
-                  </div>
-                  <CardTitle className="text-xl text-purple-600 transition-all duration-300 group-hover:text-purple-700 dark:text-purple-400 dark:group-hover:text-purple-300">
-                    {feature.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base leading-relaxed">
-                    {feature.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            </motion.div>
+              <CardHeader>
+                <div className="bg-gradient-primary mb-4 w-fit rounded-lg p-3 transition-transform group-hover:scale-110">
+                  <feature.icon className="h-6 w-6 text-white" />
+                </div>
+                <CardTitle className="text-foreground">
+                  {feature.title}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-muted-foreground">
+                  {feature.description}
+                </CardDescription>
+              </CardContent>
+            </Card>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

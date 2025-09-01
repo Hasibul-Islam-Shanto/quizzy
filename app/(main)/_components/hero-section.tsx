@@ -1,72 +1,83 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import Image from 'next/image';
+import { ArrowRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
-import { motion } from 'motion/react';
 
 const HeroSection = () => {
   return (
-    <motion.section
-      initial={{ opacity: 0, scale: 0.98, y: 30 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 0.7, ease: 'easeOut' }}
-      className="py-20 sm:py-32"
-    >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl text-center">
-          <h1 className="text-foreground mb-6 text-4xl font-bold sm:text-6xl lg:text-7xl">
-            Build Quizzes{' '}
-            <span className="text-purple-600 dark:text-purple-400">
-              Instantly
-            </span>{' '}
-            with Ease
-          </h1>
+    <section className="bg-gradient-soft relative flex min-h-screen items-center justify-center overflow-hidden">
+      <div className="bg-gradient-hero absolute inset-0 -z-10 opacity-5"></div>
+      <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-12 lg:grid-cols-2">
+          <div className="animate-fade-in text-center lg:text-left">
+            <div className="bg-gradient-card shadow-card mb-6 inline-flex items-center rounded-full border border-white/20 px-4 py-2">
+              <Sparkles className="text-primary mr-2 h-4 w-4" />
+              <span className="text-foreground text-sm font-medium">
+                AI-Powered Quiz Generation
+              </span>
+            </div>
 
-          <p className="text-muted-foreground mx-auto mb-8 max-w-2xl text-xl leading-relaxed">
-            Create interactive quizzes with beautiful UI and seamless user
-            experience. Perfect for teachers, students, and anyone who wants to
-            make learning engaging.
-          </p>
+            <h1 className="text-foreground mb-6 text-4xl leading-tight font-bold md:text-6xl">
+              Build Quizzes
+              <br />
+              <span className="from-primary via-accent to-primary bg-gradient-to-r bg-clip-text text-transparent">
+                Instantly with AI
+              </span>
+            </h1>
 
-          <div className="mb-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Button
-              size="lg"
-              className="bg-purple-600 px-8 py-6 text-lg text-white shadow-lg transition-all duration-300 hover:bg-purple-700 hover:shadow-xl"
-              asChild
-            >
-              <Link href="/quiz-builder">Start Creating</Link>
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="border-purple-600 bg-transparent px-8 py-6 text-lg text-purple-600 transition-all duration-300 hover:bg-purple-50 dark:hover:bg-purple-950"
-              asChild
-            >
-              <Link href="#demo">Watch Demo</Link>
-            </Button>
+            <p className="text-muted-foreground mb-8 max-w-2xl text-xl lg:max-w-lg">
+              Turn any topic into interactive quizzes in seconds. Create
+              engaging learning experiences with the power of artificial
+              intelligence.
+            </p>
+
+            <div className="z-10 flex flex-col justify-center gap-4 sm:flex-row lg:justify-start">
+              <Button
+                variant="hero"
+                size="lg"
+                asChild
+                onClick={() => console.log('Clicking...')}
+              >
+                <Link href="/quiz-builder">
+                  Start Creating
+                  <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </Button>
+              <Button variant="floating" size="lg">
+                Watch Demo
+              </Button>
+            </div>
           </div>
 
-          <div className="relative mx-auto max-w-3xl">
-            <div className="rounded-2xl border-2 border-purple-200 shadow-2xl dark:border-purple-800">
-              <div className="bg-card rounded-xl p-8">
-                <div className="mb-4 flex items-center space-x-2">
-                  <div className="h-3 w-3 rounded-full bg-red-500"></div>
-                  <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
-                  <div className="h-3 w-3 rounded-full bg-green-500"></div>
-                </div>
-                <Image
-                  src="/hero-1.png"
-                  alt="Quizzy Interface Preview"
-                  width={600}
-                  height={600}
-                  className="w-full rounded-lg"
-                />
-              </div>
+          {/* Hero Illustration */}
+          <div className="relative lg:pl-8">
+            <div className="animate-float relative">
+              <img
+                src={'/hero-illustration.png'}
+                alt="AI Quiz Generation Illustration"
+                className="shadow-glow mx-auto w-full max-w-lg rounded-2xl"
+              />
+            </div>
+
+            {/* Floating elements */}
+            <div
+              className="bg-gradient-primary shadow-elegant animate-float absolute -top-4 -left-4 rounded-xl p-3"
+              style={{ animationDelay: '0.5s' }}
+            >
+              <Sparkles className="h-6 w-6 text-white" />
+            </div>
+            <div
+              className="bg-accent shadow-elegant animate-float absolute -right-6 -bottom-6 rounded-xl p-4"
+              style={{ animationDelay: '1s' }}
+            >
+              <span className="text-accent-foreground text-lg font-bold">
+                100%
+              </span>
             </div>
           </div>
         </div>
       </div>
-    </motion.section>
+    </section>
   );
 };
 

@@ -1,4 +1,5 @@
 'use client';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -6,96 +7,81 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Bot, FileText, Share2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import Link from 'next/link';
 
 const steps = [
   {
-    step: '1',
-    title: 'Enter Topic or Upload File',
+    icon: FileText,
+    title: 'Enter Your Topic',
     description:
-      'Simply type your topic or upload your study materials. Our AI understands various formats including text, PDFs, and documents.',
-    image: '/upload-type.png',
+      'Type any topic or paste text content. Upload notes, articles, or course materials.',
+    color: 'text-primary',
   },
   {
-    step: '2',
+    icon: Bot,
     title: 'AI Generates Questions',
     description:
-      'Our advanced AI analyzes your content and creates relevant, engaging questions with multiple choice options and explanations.',
-    image: '/generated-quiz.jpg',
+      'Our advanced AI analyzes your content and creates relevant, engaging quiz questions automatically.',
+    color: 'text-accent',
   },
   {
-    step: '3',
-    title: 'Share & Take Quizzes',
+    icon: Share2,
+    title: 'Share & Track',
     description:
-      'Share your quiz with students instantly. They can take quizzes on any device and see results with detailed explanations.',
-    image: '/participate-quiz.jpg',
+      'Publish your quiz instantly and share with students. Monitor progress and performance in real-time.',
+    color: 'text-primary-glow',
   },
 ];
 
 const HowItWorkSection = () => {
   return (
-    <section id="how-it-works" className="py-20">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="how-it-works" className="bg-gradient-soft py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
-          <h2 className="text-foreground mb-4 text-3xl font-bold sm:text-4xl">
+          <h2 className="text-foreground mb-4 text-3xl font-bold md:text-4xl">
             How It Works
           </h2>
-          <p className="text-muted-foreground mx-auto max-w-2xl text-xl">
-            Create professional quizzes in three simple steps. No technical
-            expertise required.
+          <p className="text-muted-foreground mx-auto max-w-3xl text-xl">
+            Create professional quizzes in three simple steps with the power of
+            AI.
           </p>
         </div>
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={{
-            visible: {
-              transition: { staggerChildren: 0.18 },
-            },
-            hidden: {},
-          }}
-          className="grid grid-cols-1 gap-8 lg:grid-cols-3"
-        >
+        <div className="mb-12 grid gap-8 md:grid-cols-3">
           {steps.map((step, index) => (
-            <motion.div
-              key={index}
-              variants={{
-                hidden: { opacity: 0, y: 40 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              transition={{ duration: 0.6, ease: 'easeOut' }}
-              className="relative"
-            >
-              <Card className="h-full transition-shadow duration-300 hover:shadow-lg">
-                <CardHeader className="text-center">
-                  <div className="bg-primary text-primary-foreground mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full text-xl font-bold">
-                    {step.step}
-                  </div>
-                  <CardTitle className="text-xl">{step.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="text-center">
-                  {/* <img
-                    src={step.image || '/placeholder.svg'}
-                    alt={step.title}
-                    className="mb-4 h-48 w-full rounded-lg object-cover"
-                  /> */}
-                  <CardDescription className="text-base leading-relaxed">
-                    {step.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
+            <div key={index} className="group text-center">
+              <div className="relative mb-6">
+                {/* Connection line */}
+                {index < steps.length - 1 && (
+                  <div className="from-border absolute top-1/2 left-full z-0 hidden h-0.5 w-full -translate-y-1/2 transform bg-gradient-to-r to-transparent md:block"></div>
+                )}
 
-              {index < steps.length - 1 && (
-                <div className="absolute top-1/2 -right-4 hidden -translate-y-1/2 transform lg:block">
-                  <div className="bg-border h-0.5 w-8"></div>
-                  <div className="border-l-border absolute top-1/2 right-0 h-0 w-0 -translate-y-1/2 transform border-t-2 border-b-2 border-l-4 border-t-transparent border-b-transparent"></div>
+                {/* Step circle */}
+                <div className="bg-gradient-card shadow-elegant relative z-10 mx-auto flex h-20 w-20 items-center justify-center rounded-full transition-transform group-hover:scale-110">
+                  <step.icon className={`h-8 w-8 ${step.color}`} />
                 </div>
-              )}
-            </motion.div>
+
+                {/* Step number */}
+                <div className="bg-gradient-primary shadow-card absolute -top-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold text-white">
+                  {index + 1}
+                </div>
+              </div>
+
+              <h3 className="text-foreground mb-3 text-xl font-semibold">
+                {step.title}
+              </h3>
+              <p className="text-muted-foreground">{step.description}</p>
+            </div>
           ))}
-        </motion.div>
+        </div>
+
+        <div className="text-center">
+          <Button variant="hero" size="lg" asChild>
+            <Link href="/builder">Try It Now - It&apos;s Free</Link>
+          </Button>
+        </div>
       </div>
     </section>
   );

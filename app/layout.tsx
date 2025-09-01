@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Josefin_Sans } from 'next/font/google';
+import { Work_Sans } from 'next/font/google';
+import { ThemeProvider } from '@/providers/theme-provider';
 
-const josefinSans = Josefin_Sans({
+const workSans = Work_Sans({
   subsets: ['latin'],
   weight: ['100', '200', '300', '400', '500', '600', '700'],
 });
@@ -19,7 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${josefinSans.className} antialiased`}>{children}</body>
+      <body className={`${workSans.className} antialiased`}>
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
     </html>
   );
 }

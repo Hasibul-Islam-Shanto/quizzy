@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String       @id @default(cuid())
+  name        String
+  email       String       @unique
+  password    String?      // null if OAuth/SSO is used
+  role        Role         @default(USER)
+  avatarUrl   String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Relations
+  quizzesCreated Quiz[]       @relation("QuizCreator")   // If PROVIDER
+  quizAttempts   QuizAttempt[]
+}
+
+enum Role {
+  PROVIDER
+  USER
+  ADMIN
+}
+
+model Quiz {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  difficulty  Difficulty   @default(MEDIUM)
+  isPublished Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Relations
+  createdBy   User         @relation("QuizCreator", fields: [createdById], references: [id])
+  createdById String
+  questions   Question[]
+  attempts    QuizAttempt[]
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model Question {
+  id          String   @id @default(cuid())
+  quiz        Quiz     @relation(fields: [quizId], references: [id])
+  quizId      String
+  text        String
+  options     String[]  // Multiple-choice options
+  answer      String    // Correct answer
+  explanation String?   // AI-generated explanation
+  createdAt   DateTime  @default(now())
+
+  AttemptAnswer AttemptAnswer[]
+}
+
+model QuizAttempt {
+  id          String        @id @default(cuid())
+  user        User          @relation(fields: [userId], references: [id])
+  userId      String
+  quiz        Quiz          @relation(fields: [quizId], references: [id])
+  quizId      String
+  score       Int
+  startedAt   DateTime      @default(now())
+  finishedAt  DateTime?
+  answers     AttemptAnswer[]
+}
+
+model AttemptAnswer {
+  id          String      @id @default(cuid())
+  attempt     QuizAttempt @relation(fields: [attemptId], references: [id])
+  attemptId   String
+  question    Question    @relation(fields: [questionId], references: [id])
+  questionId  String
+  selected    String      // Student’s selected answer
+  isCorrect   Boolean
+}

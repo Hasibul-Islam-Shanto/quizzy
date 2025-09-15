@@ -4,13 +4,11 @@ import { Button } from './ui/button';
 
 const LoginButton = () => {
   return (
-    <>
-      <SignInButton>
-        <Button variant="hero" size="sm" className="cursor-pointer">
-          Login
-        </Button>
-      </SignInButton>
-    </>
+    <SignInButton>
+      <Button variant="hero" size="sm" className="cursor-pointer">
+        Login
+      </Button>
+    </SignInButton>
   );
 };
 

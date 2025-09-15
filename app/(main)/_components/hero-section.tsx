@@ -32,12 +32,7 @@ const HeroSection = () => {
             </p>
 
             <div className="z-10 flex flex-col justify-center gap-4 sm:flex-row lg:justify-start">
-              <Button
-                variant="hero"
-                size="lg"
-                asChild
-                onClick={() => console.log('Clicking...')}
-              >
+              <Button variant="hero" size="lg" asChild>
                 <Link href="/quiz-builder">
                   Start Creating
                   <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />

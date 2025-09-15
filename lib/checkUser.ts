@@ -19,10 +19,10 @@ export const checkUser = async () => {
 
   const newUser = await prisma.user.create({
     data: {
-      id: user?.id,
-      email: user?.emailAddresses[0]?.emailAddress || 'no-email',
-      name: `${user?.firstName} ${user?.lastName}`,
-      avatarUrl: user?.imageUrl || '',
+      id: user.id,
+      email: user.emailAddresses[0].emailAddress || 'no-email',
+      name: `${user.firstName} ${user.lastName}`,
+      avatarUrl: user.imageUrl || '',
     },
   });
   return newUser;

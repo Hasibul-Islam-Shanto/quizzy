@@ -23,7 +23,7 @@ const MobileMenu = () => {
         </Button>
       </div>
       {isMenuOpen && (
-        <div className="bg-background/95 border-border absolute top-10 mt-2 w-full rounded-lg border-t p-4 backdrop-blur-sm md:hidden">
+        <div className="bg-background/95 border-border absolute top-10 w-full rounded-lg border-t p-4 backdrop-blur-sm md:hidden">
           <div className="flex flex-col space-y-4 px-5">
             <Link
               href="/#features"

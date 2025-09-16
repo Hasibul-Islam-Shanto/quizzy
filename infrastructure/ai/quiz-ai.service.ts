@@ -6,11 +6,18 @@ export const generateQuestions = async ({
   numQuestions,
   difficulty,
 }: QuestionPromptType) => {
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  try {
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error(
+        'GEMINI_API_KEY environment variable is not set. Please set it to use the GoogleGenAI service.',
+      );
+    }
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
-    contents: `
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: `
     You are a quiz generator. Create ${numQuestions || 3} single-choice quiz questions about "${prompt}" with difficulty "${difficulty || 'EASY'}".
 
     Requirements:
@@ -31,15 +38,19 @@ export const generateQuestions = async ({
             }
         ]
 `,
-  });
+    });
 
-  let text = response?.text?.trim();
+    let text = response?.text?.trim();
 
-  if (text?.startsWith('```')) {
-    text = text
-      .replace(/^```(?:json)?\n?/, '')
-      .replace(/```$/, '')
-      .trim();
+    if (text?.startsWith('```')) {
+      text = text
+        .replace(/^```(?:json)?\n?/, '')
+        .replace(/```$/, '')
+        .trim();
+    }
+    return JSON.parse(text!);
+  } catch (error) {
+    console.error('Error generating questions:', error);
+    throw new Error('Failed to generate quiz questions from AI service.');
   }
-  return JSON.parse(text!);
 };

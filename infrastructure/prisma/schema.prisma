@@ -60,7 +60,7 @@ model Question {
   id          String   @id @default(cuid())
   quiz        Quiz     @relation(fields: [quizId], references: [id])
   quizId      String
-  text        String
+  question    String
   options     String[]  // Multiple-choice options
   answer      String    // Correct answer
   explanation String?   // AI-generated explanation

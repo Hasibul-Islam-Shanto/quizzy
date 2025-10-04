@@ -15,8 +15,12 @@ import {
 import QuizQuestionCard from '../../_components/QuizQuestionCard';
 import { Loader2, Share } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { publishQuizAction } from '../../actions';
+import { useRouter } from 'next/navigation';
 
 const QuizPublishContainer = ({ quiz }: { quiz: Quiz }) => {
+  const router = useRouter();
   const [title, setTitle] = useState(quiz.title ?? '');
   const [description, setDescription] = useState(quiz.description ?? '');
   const [difficulty, setDifficulty] = useState<Quiz['difficulty']>(
@@ -25,7 +29,28 @@ const QuizPublishContainer = ({ quiz }: { quiz: Quiz }) => {
   const [isPublishing, startTransition] = useTransition();
 
   const handlePublishQuiz = () => {
-    startTransition(async () => {});
+    startTransition(async () => {
+      const response = await publishQuizAction(quiz.id, {
+        title,
+        description,
+        difficulty,
+        isPublished: true,
+      });
+
+      if (response.error) {
+        toast.error('Failed to publish quiz.', {
+          description: response.error,
+          duration: 2000,
+          position: 'top-center',
+        });
+      } else {
+        toast.success('Quiz published successfully!', {
+          duration: 2000,
+          position: 'top-center',
+        });
+        router.push('/quizzes');
+      }
+    });
   };
   return (
     <div className="space-y-8">
@@ -51,7 +76,7 @@ const QuizPublishContainer = ({ quiz }: { quiz: Quiz }) => {
               className="mb-1 block text-sm font-medium"
               htmlFor="quiz-description"
             >
-              Description
+              Description <span className="text-destructive">*</span>
             </label>
             <Textarea
               id="quiz-description"
@@ -94,7 +119,13 @@ const QuizPublishContainer = ({ quiz }: { quiz: Quiz }) => {
         ))}
       </div>
 
-      <Button variant="hero" size="lg" className="w-full flex-1 cursor-pointer">
+      <Button
+        variant="hero"
+        size="lg"
+        className="w-full flex-1 cursor-pointer"
+        onClick={handlePublishQuiz}
+        disabled={isPublishing || !title.trim() || !description.trim()}
+      >
         {isPublishing ? (
           <Loader2 className="mr-2 h-5 w-5 animate-spin" />
         ) : (

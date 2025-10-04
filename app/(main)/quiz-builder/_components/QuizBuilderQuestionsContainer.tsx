@@ -21,7 +21,6 @@ const QuizBuilderQuestionsContainer = ({
   const handleCreateQuiz = () => {
     startTransition(async () => {
       const response = await createQuizAction({ title: quizTitle, questions });
-      console.log(response);
       if (response.error) {
         toast.error('Failed to create quiz.', {
           description: response.error,
@@ -29,6 +28,10 @@ const QuizBuilderQuestionsContainer = ({
           position: 'top-center',
         });
       } else {
+        toast.success('Quiz created successfully!', {
+          duration: 2000,
+          position: 'top-center',
+        });
         router.push(`/quiz-builder/${response?.quiz?.id}`);
       }
     });
@@ -50,7 +53,7 @@ const QuizBuilderQuestionsContainer = ({
           </div>
 
           <div className="grid grid-cols-2 gap-5">
-            {questions.map((question, questionIndex) => (
+            {questions?.map((question, questionIndex) => (
               <QuizQuestionCard
                 key={questionIndex}
                 question={question}

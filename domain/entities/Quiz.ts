@@ -45,3 +45,19 @@ export interface AttemptAnswer {
   selected: string;
   isCorrect: boolean;
 }
+
+export interface QuizListsQuiz {
+  id: string;
+  title: string;
+  description: string | null;
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+  isPublished: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  createdBy?: User;
+  createdById: string;
+  _count: {
+    questions: number;
+    attempts: number;
+  };
+}

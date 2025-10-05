@@ -66,3 +66,24 @@ export const updateQuiz = async (
     throw error;
   }
 };
+
+export const getAllQuizzes = async () => {
+  try {
+    const quizzes = await prisma.quiz.findMany({
+      where: {
+        isPublished: true,
+      },
+      include: {
+        _count: {
+          select: {
+            attempts: true,
+            questions: true,
+          },
+        },
+      },
+    });
+    return quizzes;
+  } catch (error) {
+    throw error;
+  }
+};

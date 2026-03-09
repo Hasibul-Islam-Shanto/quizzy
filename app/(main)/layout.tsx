@@ -7,14 +7,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body>
-        <div className="min-h-screen">
-          <Navbar />
-          {children}
-          <Footer />
-        </div>
-      </body>
-    </html>
+    <div className="min-h-screen">
+      <Navbar />
+      {children}
+      <Footer />
+    </div>
   );
 }

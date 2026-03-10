@@ -1,7 +1,7 @@
 'use server';
 
-import { Question } from '@/domain/entities/Question';
-import { createQuiz, updateQuiz } from '@/domain/respositories/QuizRepository';
+import { IQuestion } from '@/features/questions/questions.entity';
+import { createQuiz, updateQuiz } from '@/features/quiz/quiz.repository';
 import { generateQuestions } from '@/infrastructure/ai/quiz-ai.service';
 
 export const generateQuizAction = async (data: {
@@ -21,7 +21,7 @@ export const generateQuizAction = async (data: {
 
 export const createQuizAction = async (data: {
   title: string;
-  questions: Question[];
+  questions: IQuestion[];
 }) => {
   try {
     const quiz = await createQuiz(data);

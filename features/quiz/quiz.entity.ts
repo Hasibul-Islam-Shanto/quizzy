@@ -1,7 +1,7 @@
-import { Question } from './Question';
-import { User } from './User';
+import { IQuestion } from '../questions/questions.entity';
+import { IUser } from '../user/user.entity';
 
-export interface Quiz {
+export interface IQuiz {
   id: string;
   title: string;
   description: string | null;
@@ -9,44 +9,44 @@ export interface Quiz {
   isPublished: boolean;
   createdAt: Date;
   updatedAt: Date;
-  createdBy?: User;
+  createdBy?: IUser;
   createdById: string;
-  questions: Question[];
-  attempts?: QuizAttempt[];
+  questions: IQuestion[];
+  attempts?: IQuizAttempt[];
 }
 
-export interface AttemptAnswer {
+export interface IAttemptAnswer {
   id: string;
-  attempt: QuizAttempt;
+  attempt: IQuizAttempt;
   attemptId: string;
-  question: Question;
+  question: IQuestion;
   questionId: string;
   selected: string;
   isCorrect: boolean;
 }
 
-export interface QuizAttempt {
+export interface IQuizAttempt {
   id: string;
-  user: User;
+  user: IUser;
   userId: string;
-  quiz: Quiz;
+  quiz: IQuiz;
   quizId: string;
   score: number;
   startedAt: string;
   finishedAt: string;
-  answers: AttemptAnswer[];
+  answers: IAttemptAnswer[];
 }
-export interface AttemptAnswer {
+export interface IAttemptAnswer {
   id: string;
-  attempt: QuizAttempt;
+  attempt: IQuizAttempt;
   attemptId: string;
-  question: Question;
+  question: IQuestion;
   questionId: string;
   selected: string;
   isCorrect: boolean;
 }
 
-export interface QuizListsQuiz {
+export interface IQuizListsQuiz {
   id: string;
   title: string;
   description: string | null;
@@ -54,7 +54,7 @@ export interface QuizListsQuiz {
   isPublished: boolean;
   createdAt: Date;
   updatedAt: Date;
-  createdBy?: User;
+  createdBy?: IUser;
   createdById: string;
   _count: {
     questions: number;

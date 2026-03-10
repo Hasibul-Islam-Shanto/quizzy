@@ -1,12 +1,12 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Question } from '@/domain/entities/Question';
+import { IQuestion } from '@/features/questions/questions.entity';
 
 const QuizQuestionCard = ({
   question,
   questionIndex,
 }: {
-  question: Question;
+  question: IQuestion;
   questionIndex: number;
 }) => {
   return (

@@ -7,16 +7,13 @@ import { createQuizAction } from '../actions';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { IQuestion } from '@/features/questions/questions.entity';
+import { useQuestionStore } from '@/store/question.store';
 
-const QuizBuilderQuestionsContainer = ({
-  questions,
-}: {
-  questions: IQuestion[];
-}) => {
+const QuizBuilderQuestionsContainer = () => {
   const router = useRouter();
   const [isCreatingQuiz, startTransition] = useTransition();
   const [quizTitle, setQuizTitle] = useState<string>('');
+  const { questions } = useQuestionStore();
 
   const handleCreateQuiz = () => {
     startTransition(async () => {

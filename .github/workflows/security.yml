@@ -1,0 +1,104 @@
+name: Security
+
+on:
+  # Run on every PR to catch newly added vulnerable dependencies
+  pull_request:
+    branches: [main, develop]
+  # Run weekly to catch newly discovered vulnerabilities in existing deps
+  schedule:
+    - cron: '0 9 * * 1' # Every Monday at 09:00 UTC
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  # ─────────────────────────────────────────
+  # Job 1: Block PRs that add vulnerable packages
+  # ─────────────────────────────────────────
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Only runs on PRs — the action only works in that context
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          # Block PRs that introduce HIGH or CRITICAL vulnerabilities
+          fail-on-severity: high
+          # Allow licenses commonly used in open source
+          allow-licenses: MIT, Apache-2.0, BSD-2-Clause, BSD-3-Clause, ISC, 0BSD
+
+  # ─────────────────────────────────────────
+  # Job 2: Full audit of installed packages
+  # (runs on schedule and push to main)
+  # ─────────────────────────────────────────
+  audit:
+    name: Yarn Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: github.event_name != 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run audit
+        # --level high: only fail on high/critical severity
+        run: yarn audit --level high
+        continue-on-error: true
+        id: audit
+
+      - name: Report audit results
+        if: steps.audit.outcome == 'failure'
+        run: |
+          echo "::warning::Yarn audit found high or critical vulnerabilities."
+          echo "Run 'yarn audit' locally to review them."
+          exit 1
+
+  # ─────────────────────────────────────────
+  # Job 3: CodeQL static analysis
+  # ─────────────────────────────────────────
+  codeql:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript-typescript
+          # Focus on server-side security patterns relevant to this app:
+          # - SQL injection via Prisma raw queries
+          # - Path traversal
+          # - Server-side request forgery
+          queries: security-and-quality
+
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v3
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: '/language:javascript-typescript'

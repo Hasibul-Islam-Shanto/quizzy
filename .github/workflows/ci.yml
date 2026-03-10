@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+# Cancel any in-progress run for the same branch/PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  # ─────────────────────────────────────────
+  # Job 1: Lint, format, and type-check
+  # ─────────────────────────────────────────
+  quality:
+    name: Quality Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: yarn prisma generate
+
+      - name: TypeScript type-check
+        run: yarn type-check
+
+      - name: ESLint
+        run: yarn lint
+
+      - name: Prettier format check
+        run: yarn prettier --check .
+
+  # ─────────────────────────────────────────
+  # Job 2: Next.js production build
+  # (only runs after quality checks pass)
+  # ─────────────────────────────────────────
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: quality
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: yarn prisma generate
+
+      - name: Build Next.js app
+        run: yarn build
+        env:
+          # Clerk — required at build time for ClerkProvider
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_CLERK_SIGN_IN_URL: /sign-in
+          NEXT_PUBLIC_CLERK_SIGN_UP_URL: /sign-up
+          NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: /
+          NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: /
+          # Gemini — runtime only, placeholder is safe for build
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'ci-placeholder' }}
+          # Database — runtime only, Prisma connects at request time not build time
+          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://ci:ci@localhost:5432/quizzy' }}
+
+      # Cache the .next/cache folder to speed up future builds
+      - name: Cache Next.js build output
+        uses: actions/cache@v4
+        with:
+          path: |
+            .next/cache
+          key: nextjs-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            nextjs-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-
+            nextjs-${{ runner.os }}-

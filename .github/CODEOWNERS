@@ -1,0 +1,9 @@
+# Global owner — required review on all PRs
+* @hi-shanto
+
+# Prisma schema changes require careful review
+infrastructure/prisma/schema.prisma @hi-shanto
+infrastructure/database/ @hi-shanto
+
+# CI/CD pipeline changes require review
+.github/ @hi-shanto

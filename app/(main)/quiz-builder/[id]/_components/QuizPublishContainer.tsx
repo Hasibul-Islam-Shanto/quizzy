@@ -1,5 +1,5 @@
 'use client';
-import { Quiz } from '@/domain/entities/Quiz';
+import { IQuiz } from '@/features/quiz/quiz.entity';
 import React, { useState, useTransition } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -19,11 +19,11 @@ import { toast } from 'sonner';
 import { publishQuizAction } from '../../actions';
 import { useRouter } from 'next/navigation';
 
-const QuizPublishContainer = ({ quiz }: { quiz: Quiz }) => {
+const QuizPublishContainer = ({ quiz }: { quiz: IQuiz }) => {
   const router = useRouter();
   const [title, setTitle] = useState(quiz.title ?? '');
   const [description, setDescription] = useState(quiz.description ?? '');
-  const [difficulty, setDifficulty] = useState<Quiz['difficulty']>(
+  const [difficulty, setDifficulty] = useState<IQuiz['difficulty']>(
     quiz.difficulty ?? 'EASY',
   );
   const [isPublishing, startTransition] = useTransition();
@@ -94,7 +94,7 @@ const QuizPublishContainer = ({ quiz }: { quiz: Quiz }) => {
             </label>
             <Select
               value={difficulty}
-              onValueChange={v => setDifficulty(v as Quiz['difficulty'])}
+              onValueChange={v => setDifficulty(v as IQuiz['difficulty'])}
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Difficulty" />

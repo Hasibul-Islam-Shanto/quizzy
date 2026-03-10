@@ -1,6 +1,6 @@
-import { Quiz, QuizAttempt } from './Quiz';
+import { IQuiz, IQuizAttempt } from '../quiz/quiz.entity';
 
-export interface User {
+export interface IUser {
   id: string;
   name: string;
   email: string;
@@ -9,6 +9,6 @@ export interface User {
   avatarUrl?: string;
   createdAt: string;
   updatedAt: string;
-  quizzesCreated: Quiz[];
-  quizAttempts: QuizAttempt[];
+  quizzesCreated: IQuiz[];
+  quizAttempts: IQuizAttempt[];
 }

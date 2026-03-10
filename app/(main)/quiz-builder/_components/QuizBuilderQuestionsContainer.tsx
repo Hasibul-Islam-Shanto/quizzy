@@ -7,12 +7,12 @@ import { createQuizAction } from '../actions';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { Question } from '@/domain/entities/Question';
+import { IQuestion } from '@/features/questions/questions.entity';
 
 const QuizBuilderQuestionsContainer = ({
   questions,
 }: {
-  questions: Question[];
+  questions: IQuestion[];
 }) => {
   const router = useRouter();
   const [isCreatingQuiz, startTransition] = useTransition();

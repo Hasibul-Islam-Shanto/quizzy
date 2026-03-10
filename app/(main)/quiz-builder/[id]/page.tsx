@@ -1,6 +1,6 @@
-import { getQuizById } from '@/domain/respositories/QuizRepository';
 import React from 'react';
 import QuizPublishContainer from './_components/QuizPublishContainer';
+import { getQuizById } from '@/features/quiz/quiz.repository';
 
 const PublishQuiz = async ({ params }: { params: { id: string } }) => {
   const quiz = await getQuizById(params?.id);

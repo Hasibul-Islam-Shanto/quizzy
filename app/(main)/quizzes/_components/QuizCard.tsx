@@ -8,12 +8,12 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Users, BookOpen } from 'lucide-react';
-import { QuizListsQuiz } from '@/domain/entities/Quiz';
 import { currentUser } from '@clerk/nextjs/server';
 import QuizRedirectBtn from './QuizRedirectBtn';
 import { getDifficultyColor } from '../constants/diiffculty';
+import { IQuizListsQuiz } from '@/features/quiz/quiz.entity';
 
-const QuizCard = async ({ quiz }: { quiz: QuizListsQuiz }) => {
+const QuizCard = async ({ quiz }: { quiz: IQuizListsQuiz }) => {
   const user = await currentUser();
   const isAuthor = user?.id === quiz.createdById;
 

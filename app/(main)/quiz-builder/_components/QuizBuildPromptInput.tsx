@@ -14,13 +14,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
-import {
-  quizCreateSchema,
-  type QuizCreateType,
-} from '@/schema/quiz-create-schema';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { generateQuizAction } from '../actions';
+import { quizCreateSchema, QuizCreateType } from '@/features/quiz/quiz.schema';
 
 const QuizBuildPromptInput = ({
   setQuestions,

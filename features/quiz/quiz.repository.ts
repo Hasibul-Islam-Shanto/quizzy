@@ -1,10 +1,10 @@
 import prisma from '@/config/db.config';
 import { currentUser } from '@clerk/nextjs/server';
-import { Question } from '../entities/Question';
+import { IQuestion } from '../questions/questions.entity';
 
 export const createQuiz = async (quizData: {
   title: string;
-  questions: Question[];
+  questions: IQuestion[];
 }) => {
   try {
     const user = await currentUser();

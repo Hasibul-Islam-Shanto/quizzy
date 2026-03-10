@@ -1,6 +1,6 @@
-import { getAllQuizzes } from '@/domain/respositories/QuizRepository';
 import QuizzesHeader from './_components/QuizzesHeader';
 import QuizCard from './_components/QuizCard';
+import { getAllQuizzes } from '@/features/quiz/quiz.repository';
 
 const QuizzesPage = async () => {
   let quizzes = [];

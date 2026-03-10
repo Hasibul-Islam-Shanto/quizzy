@@ -78,7 +78,8 @@ jobs:
         run: yarn build
         env:
           # Clerk — required at build time for ClerkProvider
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
+            ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
           NEXT_PUBLIC_CLERK_SIGN_IN_URL: /sign-in
           NEXT_PUBLIC_CLERK_SIGN_UP_URL: /sign-up
@@ -87,7 +88,9 @@ jobs:
           # Gemini — runtime only, placeholder is safe for build
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY || 'ci-placeholder' }}
           # Database — runtime only, Prisma connects at request time not build time
-          DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://ci:ci@localhost:5432/quizzy' }}
+          DATABASE_URL:
+            ${{ secrets.DATABASE_URL ||
+            'postgresql://ci:ci@localhost:5432/quizzy' }}
 
       # Cache the .next/cache folder to speed up future builds
       - name: Cache Next.js build output
@@ -95,7 +98,9 @@ jobs:
         with:
           path: |
             .next/cache
-          key: nextjs-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('**/*.ts', '**/*.tsx') }}
+          key:
+            nextjs-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-${{
+            hashFiles('**/*.ts', '**/*.tsx') }}
           restore-keys: |
             nextjs-${{ runner.os }}-${{ hashFiles('**/yarn.lock') }}-
             nextjs-${{ runner.os }}-

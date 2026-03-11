@@ -3,10 +3,8 @@ import { Brain } from 'lucide-react';
 import HeaderProfileButton from './header-profile-button';
 import ToggleThemeButton from './toggle-theme-button';
 import MobileMenu from './mobile-menu';
-import { checkUser } from '@/lib/checkUser';
 
-const Navbar = async () => {
-  await checkUser();
+const Navbar = () => {
   return (
     <nav className="fixed top-0 z-50 w-full bg-transparent backdrop-blur-md">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

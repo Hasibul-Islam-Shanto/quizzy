@@ -18,23 +18,22 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { generateQuizAction } from '../actions';
 import { quizCreateSchema, QuizCreateType } from '@/features/quiz/quiz.schema';
+import { useQuestionStore } from '@/store/question.store';
 
-const QuizBuildPromptInput = ({
-  setQuestions,
-}: {
-  setQuestions: React.Dispatch<React.SetStateAction<never[]>>;
-}) => {
+const QuizBuildPromptInput = () => {
   const {
     register,
     handleSubmit,
     setValue,
     clearErrors,
+    reset,
     formState: { errors },
   } = useForm<QuizCreateType>({
     mode: 'all',
     resolver: zodResolver(quizCreateSchema),
   });
   const [isGeneratingQuestions, startTransition] = useTransition();
+  const { setQuestions, questions } = useQuestionStore();
 
   const onSubmit = (data: QuizCreateType) => {
     startTransition(async () => {
@@ -43,10 +42,14 @@ const QuizBuildPromptInput = ({
         difficulty: data.difficulty,
         numQuestions: data.numQuestions as number,
       });
+
       if (response.error) {
         console.error(response.error);
       } else {
-        setQuestions(response);
+        const newQuestions = response;
+        setQuestions([...questions, ...newQuestions]);
+        reset();
+        setValue('difficulty', 'EASY');
       }
     });
   };

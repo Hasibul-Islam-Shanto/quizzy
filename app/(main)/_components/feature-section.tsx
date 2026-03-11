@@ -1,4 +1,3 @@
-'use client';
 import {
   Card,
   CardContent,
@@ -13,57 +12,61 @@ const features = [
     icon: Bot,
     title: 'AI-Powered Generation',
     description:
-      'Transform any topic or text into comprehensive quizzes with intelligent question generation and multiple choice options.',
+      'Transform any topic or text into comprehensive quizzes with intelligent question generation automatically.',
   },
   {
     icon: Edit3,
     title: 'Edit & Customize',
     description:
-      'Fine-tune generated questions, adjust difficulty levels, and personalize content to match your teaching style.',
+      'Fine-tune questions, adjust difficulty levels, and personalize content to match your teaching style.',
   },
   {
     icon: Share2,
     title: 'Share with Students',
     description:
-      'Instantly distribute quizzes to students with shareable links and track participation in real-time.',
+      'Distribute quizzes instantly with shareable links and track participation in real-time.',
   },
   {
     icon: TrendingUp,
     title: 'Performance Analytics',
     description:
-      'Monitor student progress with detailed analytics, leaderboards, and insights to improve learning outcomes.',
+      'Monitor progress with detailed analytics, leaderboards, and insights to improve learning outcomes.',
   },
 ];
+
 const FeatureSection = () => {
   return (
-    <section id="features" className="bg-background py-20">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-16 text-center">
-          <h2 className="text-foreground mb-4 text-3xl font-bold md:text-4xl">
-            Powerful Features for Modern Education
+    <section id="features" className="bg-white py-10">
+      <div className="app-container">
+        <div className="mb-12 text-center">
+          <p className="mb-3 text-sm font-semibold tracking-widest text-[#567C8D] uppercase">
+            Features
+          </p>
+          <h2 className="text-3xl font-bold text-[#2F4156] md:text-4xl">
+            Everything you need
           </h2>
-          <p className="text-muted-foreground mx-auto max-w-3xl text-xl">
-            Everything you need to create, share, and track engaging quizzes
-            that enhance learning experiences.
+          <p className="mx-auto mt-4 max-w-2xl text-[#567C8D]">
+            A complete toolkit for creating, sharing, and tracking engaging
+            quizzes that enhance learning.
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {features.map((feature, index) => (
             <Card
               key={index}
-              className="group bg-gradient-card shadow-card hover:shadow-elegant border-white/20 transition-all duration-300 ease-out hover:-translate-y-2"
+              className="border-[#C8D9E6]/60 bg-white shadow-none transition-shadow duration-200 hover:shadow-md"
             >
-              <CardHeader>
-                <div className="bg-gradient-primary mb-4 w-fit rounded-lg p-3 transition-transform group-hover:scale-110">
-                  <feature.icon className="h-6 w-6 text-white" />
+              <CardHeader className="pb-3">
+                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-[#2F4156]">
+                  <feature.icon className="h-5 w-5 text-white" />
                 </div>
-                <CardTitle className="text-foreground">
+                <CardTitle className="text-base text-[#2F4156]">
                   {feature.title}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-muted-foreground">
+                <CardDescription className="text-sm leading-relaxed text-[#567C8D]">
                   {feature.description}
                 </CardDescription>
               </CardContent>

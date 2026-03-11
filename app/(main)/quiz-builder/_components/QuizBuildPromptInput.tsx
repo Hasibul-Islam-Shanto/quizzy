@@ -133,7 +133,7 @@ const QuizBuildPromptInput = () => {
             </Button>
 
             <Button
-              variant="floating"
+              variant="outline"
               size="default"
               className="border-1 border-gray-200"
               disabled

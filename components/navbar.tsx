@@ -6,6 +6,7 @@ import MobileMenu from './mobile-menu';
 const navLinks = [
   { label: 'Dashboard', href: '/dashboard' },
   { label: 'Leaderboard', href: '/quiz-leaderboard' },
+  { label: 'Quizzes', href: '/quizzes' },
 ];
 
 const Navbar = () => {

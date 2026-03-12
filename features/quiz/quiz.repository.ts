@@ -1,6 +1,7 @@
 import prisma from '@/config/db.config';
 import { currentUser } from '@clerk/nextjs/server';
 import { IQuestion } from '../questions/questions.entity';
+import { Prisma } from '@prisma/client';
 
 export const createQuiz = async (quizData: {
   title: string;
@@ -67,23 +68,38 @@ export const updateQuiz = async (
   }
 };
 
-export const getAllQuizzes = async () => {
-  try {
-    const quizzes = await prisma.quiz.findMany({
-      where: {
-        isPublished: true,
-      },
-      include: {
-        _count: {
-          select: {
-            attempts: true,
-            questions: true,
-          },
+export const getAllQuizzes = async (filters: {
+  difficulty?: 'EASY' | 'MEDIUM' | 'HARD' | 'ALL';
+  search?: string;
+}) => {
+  const where: Prisma.QuizWhereInput = {
+    isPublished: true,
+  };
+
+  if (filters.search?.trim()) {
+    where.OR = [
+      {
+        title: {
+          contains: filters.search.trim(),
+          mode: 'insensitive',
         },
       },
-    });
-    return quizzes;
-  } catch (error) {
-    throw error;
+    ];
   }
+  if (filters?.difficulty && filters.difficulty !== 'ALL') {
+    where.difficulty = filters.difficulty;
+  }
+
+  const quizzes = await prisma.quiz.findMany({
+    where,
+    include: {
+      _count: {
+        select: {
+          attempts: true,
+          questions: true,
+        },
+      },
+    },
+  });
+  return quizzes;
 };

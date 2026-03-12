@@ -1,9 +1,55 @@
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { BarChart3, Search } from 'lucide-react';
-import React from 'react';
+'use client';
 
-const QuizzesHeader = () => {
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectLabel,
+  SelectGroup,
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
+import { useDebounce } from '@/hooks/useDebounce';
+import { Search } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useCallback, useEffect, useState } from 'react';
+
+const QuizzesHeader = ({
+  search,
+  difficulty,
+}: {
+  search: string;
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD' | 'ALL';
+}) => {
+  const router = useRouter();
+  const [searchValue, setSearchValue] = useState<string>(search);
+  const searchParams = useSearchParams();
+  const debouncedSearchValue = useDebounce(searchValue, 500);
+
+  const updateFilters = useCallback(
+    (updates: { search?: string; difficulty?: string }) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (updates.search !== undefined) params.set('search', updates.search);
+      if (updates.difficulty !== undefined)
+        params.set('difficulty', updates.difficulty);
+      router.replace(`/quizzes?${params.toString()}`);
+    },
+    [router, searchParams],
+  );
+
+  const handleDifficultyChange = (value: string) => {
+    updateFilters({ difficulty: value });
+  };
+
+  useEffect(() => {
+    setSearchValue(search);
+  }, [search]);
+
+  useEffect(() => {
+    updateFilters({ search: debouncedSearchValue });
+  }, [debouncedSearchValue, updateFilters]);
+
   return (
     <>
       <div className="mb-8">
@@ -21,15 +67,27 @@ const QuizzesHeader = () => {
               <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
               <Input
                 placeholder="Search quizzes..."
+                value={searchValue}
+                onChange={e => setSearchValue(e.target.value)}
                 className="bg-background/50 border-border/50 pl-10"
               />
             </div>
           </div>
 
-          <Button variant="outline" size="sm">
-            <BarChart3 className="mr-2 h-4 w-4" />
-            Difficulty
-          </Button>
+          <Select value={difficulty} onValueChange={handleDifficultyChange}>
+            <SelectTrigger>
+              <SelectValue placeholder="Difficulty" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Difficulty</SelectLabel>
+                <SelectItem value="ALL">All</SelectItem>
+                <SelectItem value="EASY">Easy</SelectItem>
+                <SelectItem value="MEDIUM">Medium</SelectItem>
+                <SelectItem value="HARD">Hard</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         </div>
       </div>
     </>

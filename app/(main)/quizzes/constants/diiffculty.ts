@@ -7,6 +7,6 @@ export const getDifficultyColor = (difficulty: string) => {
     case 'HARD':
       return 'bg-rose-50 text-rose-700 border border-rose-200';
     default:
-      return 'bg-[#C8D9E6]/30 text-[#2F4156] border border-[#C8D9E6]';
+      return 'bg-muted text-muted-foreground border border-border';
   }
 };

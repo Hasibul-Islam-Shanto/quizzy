@@ -4,7 +4,7 @@ import HowItWorkSection from './_components/how-it-work-section';
 
 const HomagePage = () => {
   return (
-    <main>
+    <main className="bg-gradient-soft min-h-screen pt-14 pb-10">
       <HeroSection />
       <FeatureSection />
       <HowItWorkSection />

@@ -9,24 +9,17 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        /* Navy solid — primary action */
-        default:
-          'bg-[#2F4156] text-white hover:bg-[#2F4156]/90 shadow-sm',
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm',
         destructive:
           'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         outline:
-          'border border-[#C8D9E6] bg-white text-[#2F4156] hover:bg-[#C8D9E6]/20',
-        secondary:
-          'bg-[#C8D9E6]/30 text-[#2F4156] hover:bg-[#C8D9E6]/50',
-        ghost:
-          'text-[#567C8D] hover:bg-[#C8D9E6]/20 hover:text-[#2F4156]',
-        link:
-          'text-[#2F4156] underline-offset-4 hover:underline',
-        /* Navy→Teal gradient — only for primary CTAs */
-        hero:
-          'bg-gradient-to-r from-[#2F4156] to-[#567C8D] text-white font-semibold border-0 shadow-md hover:opacity-90 hover:shadow-lg',
-        accent:
-          'bg-[#567C8D] text-white hover:bg-[#567C8D]/90 shadow-sm',
+          'border border-border bg-background text-foreground hover:bg-muted',
+        secondary: 'bg-secondary/30 text-foreground hover:bg-secondary/50',
+        ghost: 'text-muted-foreground hover:bg-muted hover:text-foreground',
+        link: 'text-foreground underline-offset-4 hover:underline',
+        /* Primary gradient — orange for CTAs */
+        hero: 'bg-gradient-to-r from-primary to-secondary text-primary-foreground font-semibold border-0 shadow-md hover:opacity-90 hover:shadow-lg',
+        accent: 'bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-sm',
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',

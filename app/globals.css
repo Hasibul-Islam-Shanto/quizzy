@@ -3,37 +3,40 @@
 
 /*
   ─────────────────────────────────────────
-  Colour Palette
-  Navy     #2F4156 → hsl(212 29% 26%)
-  Teal     #567C8D → hsl(199 24% 45%)
-  Sky Blue #C8D9E6 → hsl(206 38% 84%)
-  Beige    #F5EFEB → hsl( 23 33% 94%)
-  White    #FFFFFF → hsl(  0  0% 100%)
+  Colour Palette (from travel booking screenshot)
+  Background    #F5F0E7 → hsl(38 33% 93%)  light beige/off-white
+  Primary       #FF7F27 → hsl(24 100% 55%)  vibrant orange
+  Charcoal      #333333 → hsl(0 0% 20%)     text / primary dark
+  Teal-green    #598E8D → hsl(179 23% 45%)  card / muted dark
+  Sage green    #64B097 → hsl(161 28% 54%)  card accent
+  Teal          #2B8B84 → hsl(176 53% 36%) tertiary accent
+  Purple-gray   #8A879A → hsl(248 11% 57%) borders / shadows
+  White         #FFFFFF → hsl(0 0% 100%)
   ─────────────────────────────────────────
 */
 
 :root {
   /* ── Surfaces ── */
-  --background: 0 0% 100%;
-  --foreground: 212 29% 26%;           /* Navy */
+  --background: 38 33% 93%; /* Light beige */
+  --foreground: 0 0% 20%; /* Charcoal */
 
   --card: 0 0% 100%;
-  --card-foreground: 212 29% 26%;
+  --card-foreground: 0 0% 20%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 212 29% 26%;
+  --popover-foreground: 0 0% 20%;
 
   /* ── Brand ── */
-  --primary: 212 29% 26%;              /* Navy */
+  --primary: 24 100% 55%; /* Vibrant orange */
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 206 38% 84%;            /* Sky Blue */
-  --secondary-foreground: 212 29% 26%;
+  --secondary: 179 23% 45%; /* Teal-green */
+  --secondary-foreground: 0 0% 100%;
 
-  --muted: 23 33% 94%;                 /* Beige */
-  --muted-foreground: 199 24% 45%;     /* Teal */
+  --muted: 38 33% 93%; /* Beige */
+  --muted-foreground: 0 0% 20%;
 
-  --accent: 199 24% 45%;               /* Teal */
+  --accent: 24 100% 55%; /* Vibrant orange */
   --accent-foreground: 0 0% 100%;
 
   /* ── Semantic ── */
@@ -41,38 +44,37 @@
   --destructive-foreground: 0 0% 100%;
 
   /* ── Borders & inputs ── */
-  --border: 206 38% 88%;
-  --input: 206 38% 88%;
-  --ring: 212 29% 26%;
+  --border: 248 11% 85%;
+  --input: 248 11% 85%;
+  --ring: 24 100% 55%;
 
   --radius: 0.5rem;
 
-
   /* ── Shadows ── */
-  --shadow-sm: 0 1px 4px hsl(212 29% 26% / 0.08);
-  --shadow-md: 0 4px 16px hsl(212 29% 26% / 0.10);
-  --shadow-lg: 0 8px 32px hsl(212 29% 26% / 0.12);
+  --shadow-sm: 0 1px 4px hsl(0 0% 20% / 0.08);
+  --shadow-md: 0 4px 16px hsl(0 0% 20% / 0.1);
+  --shadow-lg: 0 8px 32px hsl(0 0% 20% / 0.12);
 
   /* ── Transitions ── */
   --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   /* ── Sidebar ── */
-  --sidebar-background: 206 38% 96%;
-  --sidebar-foreground: 212 29% 26%;
-  --sidebar-primary: 212 29% 26%;
+  --sidebar-background: 38 33% 96%;
+  --sidebar-foreground: 0 0% 20%;
+  --sidebar-primary: 24 100% 55%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 206 38% 84%;
-  --sidebar-accent-foreground: 212 29% 26%;
-  --sidebar-border: 206 38% 84%;
-  --sidebar-ring: 212 29% 26%;
+  --sidebar-accent: 179 23% 45%;
+  --sidebar-accent-foreground: 0 0% 100%;
+  --sidebar-border: 248 11% 85%;
+  --sidebar-ring: 24 100% 55%;
 }
 
 /* ─────────────────────────────────────────
    Tailwind v4 theme mapping
 ───────────────────────────────────────── */
 @theme inline {
-  --font-sans: var(--font-geist);
-  --font-serif: var(--font-manrope);
+  --font-sans: var(--font-geist, ui-sans-serif, system-ui, sans-serif);
+  --font-serif: var(--font-manrope, ui-serif, Georgia, serif);
   --font-mono:
     ui-monospace, SFMono-Regular, 'SF Mono', Monaco, Consolas,
     'Liberation Mono', 'Courier New', monospace;
@@ -99,13 +101,31 @@
   --radius-md: var(--radius);
   --radius-lg: calc(var(--radius) + 4px);
   --radius-xl: calc(var(--radius) + 8px);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-background: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+  --background-image-gradient-soft: linear-gradient(
+    to bottom,
+    hsl(38 33% 96%),
+    hsl(38 33% 93%)
+  );
+  --background-image-gradient-card: linear-gradient(
+    to bottom,
+    hsl(0 0% 100%),
+    hsl(38 33% 97%)
+  );
+  --background-image-gradient-primary: linear-gradient(
+    to right,
+    hsl(24 100% 55%),
+    hsl(24 100% 50%)
+  );
+  --shadow-elegant: 0 4px 24px hsl(0 0% 20% / 0.08);
+  --shadow-card: 0 2px 12px hsl(0 0% 20% / 0.06);
 }
 
 /* ─────────────────────────────────────────
@@ -140,31 +160,66 @@
    Animations
 ───────────────────────────────────────── */
 @keyframes fade-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
-.animate-fade-in { animation: fade-in 0.3s ease-out; }
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
 
 @keyframes scale-in {
-  from { transform: scale(0.96); opacity: 0; }
-  to   { transform: scale(1);    opacity: 1; }
+  from {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
-.animate-scale-in { animation: scale-in 0.2s ease-out; }
+.animate-scale-in {
+  animation: scale-in 0.2s ease-out;
+}
 
 @keyframes accordion-down {
-  from { height: 0; }
-  to   { height: var(--radix-accordion-content-height); }
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
 }
-.animate-accordion-down { animation: accordion-down 0.2s ease-out; }
+.animate-accordion-down {
+  animation: accordion-down 0.2s ease-out;
+}
 
 @keyframes accordion-up {
-  from { height: var(--radix-accordion-content-height); }
-  to   { height: 0; }
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
 }
-.animate-accordion-up { animation: accordion-up 0.2s ease-out; }
+.animate-accordion-up {
+  animation: accordion-up 0.2s ease-out;
+}
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-6px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
 }
-.animate-float { animation: float 3s ease-in-out infinite; }
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}

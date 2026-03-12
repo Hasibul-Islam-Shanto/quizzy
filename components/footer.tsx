@@ -2,7 +2,7 @@ import { Brain } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-card border-border border-t">
+    <footer className="app-container">
       <div className="app-container">
         <div className="flex items-center justify-between py-5">
           <div className="flex items-center gap-2">

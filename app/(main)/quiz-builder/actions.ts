@@ -3,6 +3,7 @@
 import { IQuestion } from '@/features/questions/questions.entity';
 import {
   createQuiz,
+  getAllQuizzes,
   getQuizById,
   updateQuiz,
 } from '@/features/quiz/quiz.repository';
@@ -81,6 +82,21 @@ export const getQuizByIdAction = async (id: string) => {
     return {
       success: false,
       error: (error as Error).message || 'Failed to get quiz.',
+    };
+  }
+};
+
+export const getAllQuizzesAction = async (filters: {
+  difficulty?: 'EASY' | 'MEDIUM' | 'HARD' | 'ALL';
+  search?: string;
+}) => {
+  try {
+    const quizzes = await getAllQuizzes(filters);
+    return { success: true, quizzes };
+  } catch (error) {
+    return {
+      success: false,
+      error: (error as Error).message || 'Failed to get quizzes.',
     };
   }
 };

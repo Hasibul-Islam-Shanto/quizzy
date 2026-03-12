@@ -33,14 +33,15 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Run audit
-        # --level high: only fail on high/critical severity
-        run: yarn audit --level high
-        continue-on-error: true
-        id: audit
-
-      - name: Report audit results
-        if: steps.audit.outcome == 'failure'
+        # Yarn Classic: --level only filters output, not exit code.
+        # Exit code bitmask: 1=low, 2=moderate, 4=high, 8=critical.
+        # Fail only when high (8) or critical (16) vulnerabilities exist.
         run: |
-          echo "::warning::Yarn audit found high or critical vulnerabilities."
-          echo "Run 'yarn audit' locally to review them."
-          exit 1
+          yarn audit --level high
+          EXIT=$?
+          if [ $EXIT -ge 8 ]; then
+            echo "::warning::Yarn audit found high or critical vulnerabilities."
+            echo "Run 'yarn audit' locally to review them."
+            exit 1
+          fi
+          echo "No high or critical vulnerabilities found."

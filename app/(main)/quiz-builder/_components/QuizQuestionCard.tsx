@@ -15,7 +15,7 @@ const QuizQuestionCard = ({
 }) => {
   const { deleteQuestion } = useQuestionStore();
   return (
-    <Card className="bg-gradient-card shadow-card border-white/20 !px-0 !py-2">
+    <Card className="bg-gradient-card shadow-card border-border/50 !px-0 !py-2">
       <CardContent className="relative space-y-2">
         <Button
           variant="ghost"

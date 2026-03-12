@@ -5,50 +5,42 @@ import { useState } from 'react';
 import { Button } from './ui/button';
 import { Menu, X } from 'lucide-react';
 
+const navItems = [
+  { label: 'Dashboard', href: '/dashboard' },
+  { label: 'Leaderboard', href: '/quiz-leaderboard' },
+];
+
 const MobileMenu = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState(false);
+
   return (
     <>
-      <div className="md:hidden">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {isMenuOpen ? (
-            <X className="h-5 w-5" />
-          ) : (
-            <Menu className="h-5 w-5" />
-          )}
-        </Button>
-      </div>
-      {isMenuOpen && (
-        <div className="bg-background/95 border-border absolute top-10 w-full rounded-lg border-t p-4 backdrop-blur-sm md:hidden">
-          <div className="flex flex-col space-y-4 px-5">
-            <Link
-              href="/#features"
-              className="text-muted-foreground hover:text-foreground transition-smooth"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Features
-            </Link>
-            <Link
-              href="/#how-it-works"
-              className="text-muted-foreground hover:text-foreground transition-smooth"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              How it Works
-            </Link>
-            <Link
-              href="/dashboard"
-              className="text-muted-foreground hover:text-foreground transition-smooth"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Dashboard
-            </Link>
-            <div className="border-border flex flex-col space-y-2 border-t pt-4">
-              <Button variant="hero" size="sm" asChild>
-                <Link href="/login">Login</Link>
+      <button
+        className="text-foreground hover:bg-muted flex items-center justify-center rounded-md p-1.5 transition-colors md:hidden"
+        onClick={() => setOpen(!open)}
+        aria-label="Toggle menu"
+      >
+        {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+      </button>
+
+      {open && (
+        <div className="border-border bg-card/95 absolute top-14 right-0 left-0 border-b py-3 backdrop-blur-sm md:hidden">
+          <div className="app-container flex flex-col gap-1">
+            {navItems.map(item => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-muted-foreground hover:bg-muted hover:text-foreground rounded-md px-3 py-2 text-sm transition-colors"
+                onClick={() => setOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ))}
+            <div className="border-border mt-2 border-t pt-2">
+              <Button variant="hero" size="sm" className="w-full" asChild>
+                <Link href="/quiz-builder" onClick={() => setOpen(false)}>
+                  Start Creating
+                </Link>
               </Button>
             </div>
           </div>

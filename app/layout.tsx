@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { Work_Sans } from 'next/font/google';
-import { ThemeProvider } from '@/providers/theme-provider';
 import ClerkGlobalProvider from '@/providers/ClerkGlobalProvider';
 
 const workSans = Work_Sans({
@@ -21,10 +20,8 @@ export default function RootLayout({
 }) {
   return (
     <ClerkGlobalProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body className={`${workSans.className} antialiased`}>
-          <ThemeProvider>{children}</ThemeProvider>
-        </body>
+      <html lang="en">
+        <body className={`${workSans.className} antialiased`}>{children}</body>
       </html>
     </ClerkGlobalProvider>
   );

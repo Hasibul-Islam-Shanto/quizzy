@@ -55,7 +55,7 @@ const QuizBuildPromptInput = () => {
   };
 
   return (
-    <Card className="bg-gradient-card shadow-elegant mb-8 border-border/50">
+    <Card className="bg-gradient-card shadow-elegant border-border/50 mb-8">
       <CardHeader>
         <CardTitle className="text-foreground flex items-center gap-2">
           <Sparkles className="text-primary h-5 w-5" />

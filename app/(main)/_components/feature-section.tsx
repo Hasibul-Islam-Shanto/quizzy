@@ -39,13 +39,13 @@ const FeatureSection = () => {
     <section id="features" className="py-10">
       <div className="app-container">
         <div className="mb-12 text-center">
-          <p className="mb-3 text-sm font-semibold tracking-widest text-muted-foreground uppercase">
+          <p className="text-muted-foreground mb-3 text-sm font-semibold tracking-widest uppercase">
             Features
           </p>
-          <h2 className="text-3xl font-bold text-foreground md:text-4xl">
+          <h2 className="text-foreground text-3xl font-bold md:text-4xl">
             Everything you need
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+          <p className="text-muted-foreground mx-auto mt-4 max-w-2xl">
             A complete toolkit for creating, sharing, and tracking engaging
             quizzes that enhance learning.
           </p>
@@ -55,18 +55,18 @@ const FeatureSection = () => {
           {features.map((feature, index) => (
             <Card
               key={index}
-              className="border-border/50 bg-gradient-card shadow-card transition-shadow duration-200 hover:shadow-elegant"
+              className="border-border/50 bg-gradient-card shadow-card hover:shadow-elegant transition-shadow duration-200"
             >
               <CardHeader className="pb-3">
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-                  <feature.icon className="h-5 w-5 text-primary-foreground" />
+                <div className="bg-primary mb-3 flex h-10 w-10 items-center justify-center rounded-lg">
+                  <feature.icon className="text-primary-foreground h-5 w-5" />
                 </div>
-                <CardTitle className="text-base text-foreground">
+                <CardTitle className="text-foreground text-base">
                   {feature.title}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-sm leading-relaxed text-muted-foreground">
+                <CardDescription className="text-muted-foreground text-sm leading-relaxed">
                   {feature.description}
                 </CardDescription>
               </CardContent>

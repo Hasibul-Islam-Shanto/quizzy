@@ -28,13 +28,13 @@ const HowItWorkSection = () => {
     <section id="how-it-works" className="py-10">
       <div className="app-container">
         <div className="mb-12 text-center">
-          <p className="mb-3 text-sm font-semibold tracking-widest text-muted-foreground uppercase">
+          <p className="text-muted-foreground mb-3 text-sm font-semibold tracking-widest uppercase">
             How It Works
           </p>
-          <h2 className="text-3xl font-bold text-foreground md:text-4xl">
+          <h2 className="text-foreground text-3xl font-bold md:text-4xl">
             Three simple steps
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+          <p className="text-muted-foreground mx-auto mt-4 max-w-2xl">
             Create professional quizzes in minutes — no experience needed.
           </p>
         </div>
@@ -44,22 +44,22 @@ const HowItWorkSection = () => {
             <div key={index} className="relative text-center">
               {/* Connector line */}
               {index < steps.length - 1 && (
-                <div className="absolute top-6 right-[-calc(50%-3rem)] left-[calc(50%+3rem)] hidden h-px bg-border md:block" />
+                <div className="bg-border absolute top-6 right-[-calc(50%-3rem)] left-[calc(50%+3rem)] hidden h-px md:block" />
               )}
 
               {/* Icon circle */}
-              <div className="relative mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full border-2 border-border bg-card">
-                <step.icon className="h-5 w-5 text-foreground" />
+              <div className="border-border bg-card relative mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-full border-2">
+                <step.icon className="text-foreground h-5 w-5" />
                 {/* Step number */}
-                <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                <span className="bg-primary text-primary-foreground absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-bold">
                   {index + 1}
                 </span>
               </div>
 
-              <h3 className="mb-2 font-semibold text-foreground">
+              <h3 className="text-foreground mb-2 font-semibold">
                 {step.title}
               </h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">
+              <p className="text-muted-foreground text-sm leading-relaxed">
                 {step.description}
               </p>
             </div>

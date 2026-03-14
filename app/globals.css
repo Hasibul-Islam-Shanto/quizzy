@@ -27,7 +27,7 @@
   --popover-foreground: 0 0% 20%;
 
   /* ── Brand ── */
-  --primary: 24 100% 55%; /* Vibrant orange */
+  --primary: 24 90% 55%; /* Vibrant orange */
   --primary-foreground: 0 0% 100%;
 
   --secondary: 179 23% 45%; /* Teal-green */
@@ -36,7 +36,7 @@
   --muted: 38 33% 93%; /* Beige */
   --muted-foreground: 0 0% 20%;
 
-  --accent: 24 100% 55%; /* Vibrant orange */
+  --accent: 24 90% 55%; /* Vibrant orange */
   --accent-foreground: 0 0% 100%;
 
   /* ── Semantic ── */

@@ -40,6 +40,7 @@ export const getQuizById = async (quizId: string) => {
       where: { id: quizId },
       include: {
         questions: true,
+        createdBy: { select: { name: true, id: true } },
       },
     });
     return quiz;

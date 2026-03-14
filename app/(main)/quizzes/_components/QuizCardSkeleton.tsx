@@ -9,7 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const QuizCardSkeleton = () => {
   return (
-    <Card className="bg-gradient-card border-border/50 !p-0 !py-3">
+    <Card className="border-border/50 !p-0 !py-3">
       <CardHeader>
         <div className="flex items-start justify-end">
           <Skeleton className="h-5 w-14 rounded-md" />

@@ -19,7 +19,11 @@ import { toast } from 'sonner';
 import { publishQuizAction } from '../../actions';
 import { useRouter } from 'next/navigation';
 
-const QuizPublishContainer = ({ quiz }: { quiz: IQuiz }) => {
+type QuizPublishProps = Omit<IQuiz, 'createdBy'> & {
+  createdBy?: { name: string };
+};
+
+const QuizPublishContainer = ({ quiz }: { quiz: QuizPublishProps }) => {
   const router = useRouter();
   const [title, setTitle] = useState(quiz.title ?? '');
   const [description, setDescription] = useState(quiz.description ?? '');

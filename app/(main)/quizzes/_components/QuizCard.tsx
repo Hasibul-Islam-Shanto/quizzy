@@ -30,6 +30,12 @@ const QuizCard = async ({
   const hasAttempted =
     attempt.success && attempt.attempt && attempt.attempt.userId === user?.id;
 
+  const hasAttemptedNotFinished =
+    attempt.success &&
+    attempt.attempt &&
+    attempt.attempt.userId === user?.id &&
+    attempt.attempt.finishedAt === null;
+
   return (
     <Card className="bg-gradient-card border-border/50 hover-scale !p-0 !py-3 transition-all duration-300 hover:shadow-lg">
       <CardHeader>
@@ -63,6 +69,7 @@ const QuizCard = async ({
             id={quiz.id}
             attemptId={attempt.attempt?.id ?? ''}
             hasAttempted={hasAttempted ?? false}
+            hasAttemptedNotFinished={hasAttemptedNotFinished ?? false}
           />
         </div>
       </CardContent>

@@ -136,7 +136,10 @@ const QuizStartedQuestions = ({
           <Button
             onClick={handleSubmitQuiz}
             variant="default"
-            disabled={Object.keys(answers).length === 0 || isStartSubmitting}
+            disabled={
+              Object.keys(answers).length !== totalQuestions ||
+              isStartSubmitting
+            }
           >
             {isStartSubmitting ? (
               <>

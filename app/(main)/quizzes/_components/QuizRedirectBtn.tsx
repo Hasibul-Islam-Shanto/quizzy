@@ -12,11 +12,13 @@ const QuizRedirectBtn = ({
   id,
   hasAttempted,
   attemptId,
+  hasAttemptedNotFinished,
 }: {
   isAuthor: boolean;
   id: string;
   hasAttempted: boolean;
   attemptId: string;
+  hasAttemptedNotFinished: boolean;
 }) => {
   const router = useRouter();
   const [isStartingQuiz, startTransition] = useTransition();
@@ -54,11 +56,21 @@ const QuizRedirectBtn = ({
             See Details
           </Button>
         </Link>
-        <Link href={`/quizzes/${attemptId}/score`} className="w-full">
-          <Button className="w-full" variant="default">
-            See Result
-          </Button>
-        </Link>
+        {hasAttemptedNotFinished ? (
+          <Link href={`/quizzes/${id}/attempt`} className="w-full">
+            <Button className="w-full" variant="default">
+              <Play className="mr-2 h-4 w-4" />
+              Continue Quiz
+            </Button>
+          </Link>
+        ) : (
+          <Link href={`/quizzes/${attemptId}/score`} className="w-full">
+            <Button className="w-full" variant="default">
+              <Eye className="mr-2 h-4 w-4" />
+              See Result
+            </Button>
+          </Link>
+        )}
       </div>
     );
   }

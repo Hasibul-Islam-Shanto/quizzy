@@ -187,7 +187,7 @@ const ScorePage = async ({ params }: { params: Promise<{ id: string }> }) => {
                 <Share2 className="mr-2 h-4 w-4" />
                 Share Results
               </Button>
-              <Button variant="hero" className="flex-1" asChild>
+              <Button variant="default" className="flex-1" asChild>
                 <Link href="/quizzes">Browse More Quizzes</Link>
               </Button>
             </div>

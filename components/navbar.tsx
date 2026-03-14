@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Brain } from 'lucide-react';
 import HeaderProfileButton from './header-profile-button';
 import MobileMenu from './mobile-menu';
+import { checkUser } from '@/lib/checkUser';
 
 const navLinks = [
   { label: 'Dashboard', href: '/dashboard' },
@@ -9,7 +10,8 @@ const navLinks = [
   { label: 'Quizzes', href: '/quizzes' },
 ];
 
-const Navbar = () => {
+const Navbar = async () => {
+  await checkUser();
   return (
     <nav className="fixed top-0 z-50 w-full backdrop-blur-sm">
       <div className="app-container">
@@ -23,7 +25,6 @@ const Navbar = () => {
             </span>
           </Link>
 
-          {/* Right side: nav links + profile */}
           <div className="hidden items-center gap-6 md:flex">
             {navLinks.map(item => (
               <Link

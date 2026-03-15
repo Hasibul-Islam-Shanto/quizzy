@@ -35,10 +35,13 @@ jobs:
       - name: Run audit
         # Yarn Classic: --level only filters output, not exit code.
         # Exit code bitmask: 1=low, 2=moderate, 4=high, 8=critical.
+        # set +e: don't exit when yarn audit returns non-zero (low/moderate).
         # Fail only when high (8) or critical (16) vulnerabilities exist.
         run: |
+          set +e
           yarn audit --level high
           EXIT=$?
+          set -e
           if [ $EXIT -ge 8 ]; then
             echo "::warning::Yarn audit found high or critical vulnerabilities."
             echo "Run 'yarn audit' locally to review them."

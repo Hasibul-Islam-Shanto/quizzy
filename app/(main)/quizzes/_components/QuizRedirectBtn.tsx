@@ -64,7 +64,7 @@ const QuizRedirectBtn = ({
             </Button>
           </Link>
         ) : (
-          <Link href={`/quizzes/${attemptId}/score`} className="w-full">
+          <Link href={`/attempts/${attemptId}/score`} className="w-full">
             <Button className="w-full" variant="default">
               <Eye className="mr-2 h-4 w-4" />
               See Result

@@ -118,7 +118,7 @@ const QuizStartButton = ({ quiz }: { quiz: QuizStartButtonProps }) => {
         )}
 
         {quiz.hasAttempted && !quiz.hasAttemptedNotFinished && (
-          <Link href={`/quizzes/${quiz.attemptId}/score`}>
+          <Link href={`/attempts/${quiz.attemptId}/score`}>
             <Button variant="default">
               <Eye className="mr-2 h-5 w-5" />
               See Result

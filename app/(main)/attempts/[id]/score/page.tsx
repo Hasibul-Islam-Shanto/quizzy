@@ -1,21 +1,21 @@
+import React from 'react';
+import { getAttemptByIdAction } from '../../action';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getAttemptByIdAction } from '../../action';
-import { getDifficultyColor } from '../../constants/diiffculty';
+import { notFound } from 'next/navigation';
 import {
   BookOpen,
   CalendarClock,
   CheckCircle2,
   Gauge,
-  RotateCcw,
   Share2,
   Trophy,
   User,
   XCircle,
 } from 'lucide-react';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { getDifficultyColor } from '@/app/(main)/quizzes/constants/diiffculty';
 
 const formatDate = (date: string | Date) =>
   new Intl.DateTimeFormat('en-US', {

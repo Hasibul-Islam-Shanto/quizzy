@@ -4,7 +4,7 @@ import { getQuizByIdAction } from '../../quiz-builder/actions';
 import QuizBasicDetails from '../_components/QuizBasicDetails';
 import QuizQuestions from '../_components/QuizQuestions';
 import QuizStartButton from '../_components/QuizStartButton';
-import { getAttemptByUserIdAndQuizIdAction } from '../action';
+import { getAttemptByUserIdAndQuizIdAction } from '../../attempts/action';
 
 const QuizPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;

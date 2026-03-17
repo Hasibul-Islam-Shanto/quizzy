@@ -11,8 +11,8 @@ import { Users, BookOpen } from 'lucide-react';
 import QuizRedirectBtn from './QuizRedirectBtn';
 import { getDifficultyColor } from '../constants/diiffculty';
 import { IQuizListsQuiz } from '@/features/quiz/quiz.entity';
-import { getAttemptByUserIdAndQuizIdAction } from '../action';
 import { User } from '@clerk/nextjs/server';
+import { getAttemptByUserIdAndQuizIdAction } from '../../attempts/action';
 
 const QuizCard = async ({
   quiz,

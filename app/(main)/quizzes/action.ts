@@ -3,7 +3,6 @@
 import {
   createAttempt,
   createAttemptAnswers,
-  getAttemptById,
   getAttemptByUserIdAndQuizId,
   updateAttempt,
 } from '@/features/attempt/attempt.repository';
@@ -43,30 +42,6 @@ export const startQuizAction = async (quizId: string) => {
     return {
       success: false,
       message: (error as Error).message || 'Failed to start quiz',
-    };
-  }
-};
-
-export const getAttemptByUserIdAndQuizIdAction = async (
-  userId: string,
-  quizId: string,
-) => {
-  try {
-    const attempt = await getAttemptByUserIdAndQuizId(userId, quizId);
-    if (!attempt) {
-      return {
-        success: false,
-        message: 'Attempt not found',
-      };
-    }
-    return {
-      success: true,
-      attempt,
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: (error as Error).message || 'Failed to get attempt',
     };
   }
 };
@@ -132,27 +107,6 @@ export const submitQuizAction = async (
     return {
       success: false,
       message: (error as Error).message || 'Failed to submit quiz',
-    };
-  }
-};
-
-export const getAttemptByIdAction = async (id: string) => {
-  try {
-    const attempt = await getAttemptById(id);
-    if (!attempt) {
-      return {
-        success: false,
-        message: 'Attempt not found',
-      };
-    }
-    return {
-      success: true,
-      attempt,
-    };
-  } catch (error) {
-    return {
-      success: false,
-      message: (error as Error).message || 'Failed to get attempt',
     };
   }
 };

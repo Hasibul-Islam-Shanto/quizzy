@@ -2,9 +2,10 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, dev]
+  # Run on all PRs (any base branch)
   pull_request:
-    branches: [main, develop]
+    branches: ['**']
 
 # Cancel any in-progress run for the same branch/PR
 concurrency:

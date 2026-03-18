@@ -3,11 +3,13 @@ import { Brain, Sparkles } from 'lucide-react';
 import HeaderProfileButton from './header-profile-button';
 import MobileMenu from './mobile-menu';
 import { checkUser } from '@/lib/checkUser';
+import NavLink from './navLink';
 
 const navLinks = [
-  { label: 'Dashboard', href: '/dashboard' },
-  { label: 'Leaderboard', href: '/quiz-leaderboard' },
+  { label: 'Home', href: '/' },
   { label: 'Quizzes', href: '/quizzes' },
+  { label: 'Dashboard', href: '/quiz-dashboard' },
+  { label: 'Leaderboard', href: '/quiz-leaderboard' },
 ];
 
 const Navbar = async () => {
@@ -27,15 +29,9 @@ const Navbar = async () => {
             </div>
           </Link>
 
-          <div className="hidden items-center gap-6 md:flex">
+          <div className="hidden items-center gap-4 md:flex">
             {navLinks.map(item => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-              >
-                {item.label}
-              </Link>
+              <NavLink key={item.href} label={item.label} href={item.href} />
             ))}
             <HeaderProfileButton />
           </div>

@@ -42,19 +42,13 @@ describe('calculateScore', () => {
   });
 
   it('returns 0 for empty answers', () => {
-    const questions = [
-      createQuestion('q1', 'A'),
-      createQuestion('q2', 'B'),
-    ];
+    const questions = [createQuestion('q1', 'A'), createQuestion('q2', 'B')];
     const answers: Record<string, string> = {};
     expect(calculateScore(answers, questions)).toBe(0);
   });
 
   it('treats missing answer as wrong', () => {
-    const questions = [
-      createQuestion('q1', 'A'),
-      createQuestion('q2', 'B'),
-    ];
+    const questions = [createQuestion('q1', 'A'), createQuestion('q2', 'B')];
     const answers = { q1: 'A' }; // q2 missing
     expect(calculateScore(answers, questions)).toBe(1);
   });
@@ -63,5 +57,23 @@ describe('calculateScore', () => {
     const questions: IQuestion[] = [];
     const answers = {};
     expect(calculateScore(answers, questions)).toBe(0);
+  });
+
+  it('ignores extra answers not in questions', () => {
+    const questions = [createQuestion('q1', 'A')];
+    const answers = { q1: 'A', q2: 'B', qExtra: 'X' };
+    expect(calculateScore(answers, questions)).toBe(1);
+  });
+
+  it('returns correct score for single question', () => {
+    const questions = [createQuestion('q1', 'A')];
+    expect(calculateScore({ q1: 'A' }, questions)).toBe(1);
+    expect(calculateScore({ q1: 'B' }, questions)).toBe(0);
+  });
+
+  it('handles whitespace in answers (exact match)', () => {
+    const questions = [createQuestion('q1', 'Answer')];
+    expect(calculateScore({ q1: 'Answer' }, questions)).toBe(1);
+    expect(calculateScore({ q1: ' Answer' }, questions)).toBe(0);
   });
 });

@@ -42,4 +42,25 @@ describe('formatTimeSpent', () => {
   it('rounds down fractional seconds', () => {
     expect(formatTimeSpent(45_999)).toBe('45s');
   });
+
+  it('formats 1 second only', () => {
+    expect(formatTimeSpent(1_000)).toBe('1s');
+  });
+
+  it('formats 59 seconds (under 1 minute)', () => {
+    expect(formatTimeSpent(59_000)).toBe('59s');
+  });
+
+  it('formats 23 hours 59 minutes 59 seconds', () => {
+    const ms = 23 * 3600 * 1000 + 59 * 60 * 1000 + 59 * 1000;
+    expect(formatTimeSpent(ms)).toBe('23h 59m 59s');
+  });
+
+  it('formats 7 days (one week)', () => {
+    expect(formatTimeSpent(7 * 86_400_000)).toBe('7d');
+  });
+
+  it('handles very large duration (100 days)', () => {
+    expect(formatTimeSpent(100 * 86_400_000)).toBe('100d');
+  });
 });

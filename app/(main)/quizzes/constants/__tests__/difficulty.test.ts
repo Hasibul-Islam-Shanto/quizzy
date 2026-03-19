@@ -31,4 +31,19 @@ describe('getDifficultyColor', () => {
       'bg-muted text-muted-foreground border border-border',
     );
   });
+
+  it('returns muted colors for lowercase difficulty (case-sensitive)', () => {
+    expect(getDifficultyColor('easy')).toBe(
+      'bg-muted text-muted-foreground border border-border',
+    );
+    expect(getDifficultyColor('medium')).toBe(
+      'bg-muted text-muted-foreground border border-border',
+    );
+  });
+
+  it('returns muted colors for numeric or special input', () => {
+    expect(getDifficultyColor('1')).toBe(
+      'bg-muted text-muted-foreground border border-border',
+    );
+  });
 });

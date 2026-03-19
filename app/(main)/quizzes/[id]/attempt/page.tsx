@@ -17,7 +17,7 @@ const AttemptPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   }
 
   const quiz = response.quiz;
-  const isCreator = user?.id === quiz.createdById;
+  // const isCreator = user?.id === quiz.createdById;
   return (
     <div className="bg-gradient-soft min-h-screen pb-10">
       <div className="mx-auto max-w-4xl px-4 pt-20 sm:px-6 lg:px-8">

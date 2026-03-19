@@ -22,7 +22,7 @@ const LeaderBoardHeader = ({
       <div className="mb-8 flex flex-wrap gap-4">
         <Suspense
           fallback={
-            <div className="h-9 w-48 animate-pulse rounded-md bg-muted" />
+            <div className="bg-muted h-9 w-48 animate-pulse rounded-md" />
           }
         >
           <QuizSelect quizzes={quizzes} currentQuizId={currentQuizId} />

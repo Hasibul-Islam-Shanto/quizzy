@@ -148,3 +148,13 @@ export const getUserQuiz = async (userId: string) => {
   });
   return quizzes;
 };
+
+export const getParticipatedQuizzes = async (userId: string) => {
+  const quizzes = await prisma.quiz.findMany({
+    where: { attempts: { some: { userId } } },
+    include: {
+      _count: { select: { attempts: true } },
+    },
+  });
+  return quizzes;
+};

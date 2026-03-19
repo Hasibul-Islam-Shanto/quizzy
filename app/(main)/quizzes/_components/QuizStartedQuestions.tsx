@@ -49,7 +49,7 @@ const QuizStartedQuestions = ({
       const response = await submitQuizAction(quizId, answers);
       if (response.success) {
         toast.success(response.message);
-        router.push(`/quizzes/${response?.attempt?.id}/score`);
+        router.push(`/attempts/${response?.attempt?.id}/score`);
       } else {
         toast.error(response.message);
       }

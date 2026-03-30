@@ -23,7 +23,10 @@ export const getAttemptByUserIdAndQuizId = async (
   });
 };
 
-export const createAttemptForUserQuiz = async (userId: string, quizId: string) => {
+export const createAttemptForUserQuiz = async (
+  userId: string,
+  quizId: string,
+) => {
   try {
     const attempt = await prisma.quizAttempt.create({
       data: {

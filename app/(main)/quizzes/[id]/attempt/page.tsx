@@ -10,11 +10,13 @@ import { notFound } from 'next/navigation';
 
 const AttemptPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  const [quizResponse, attemptResponse, publicQuizResponse] = await Promise.all([
-    getQuizForAttemptAction(id),
-    getMyAttemptByQuizIdAction(id),
-    getPublicQuizByIdAction(id),
-  ]);
+  const [quizResponse, attemptResponse, publicQuizResponse] = await Promise.all(
+    [
+      getQuizForAttemptAction(id),
+      getMyAttemptByQuizIdAction(id),
+      getPublicQuizByIdAction(id),
+    ],
+  );
 
   if (
     !quizResponse.success ||

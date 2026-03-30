@@ -11,9 +11,13 @@ export const quizCreateSchema = z.object({
     .min(10, { message: 'Prompt must be at least 10 characters.' })
     .max(2_000, { message: 'Prompt must be at most 2000 characters.' }),
   difficulty: difficultySchema,
-  numQuestions: z.coerce.number().int().min(5, {
-    message: 'You must create at least 5 questions.',
-  }).max(20, { message: 'You can generate at most 20 questions at a time.' }),
+  numQuestions: z.coerce
+    .number()
+    .int()
+    .min(5, {
+      message: 'You must create at least 5 questions.',
+    })
+    .max(20, { message: 'You can generate at most 20 questions at a time.' }),
 });
 
 export const createQuizPayloadSchema = z.object({

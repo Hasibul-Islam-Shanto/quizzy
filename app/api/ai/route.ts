@@ -35,7 +35,8 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           error:
-            validatedBody.error.issues[0]?.message ?? 'Invalid AI quiz payload.',
+            validatedBody.error.issues[0]?.message ??
+            'Invalid AI quiz payload.',
         },
         { status: 400 },
       );

@@ -17,7 +17,7 @@ const NavLink = ({ label, href }: { label: string; href: string }) => {
         'border-b-2 border-transparent px-2 py-1 text-sm transition-colors',
         isActive
           ? 'text-primary font-semibold'
-          : 'text-muted-foreground font-medium hover:text-foreground',
+          : 'text-muted-foreground hover:text-foreground font-medium',
       )}
     >
       {label}

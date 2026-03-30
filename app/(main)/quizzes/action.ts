@@ -27,7 +27,10 @@ export const startQuizAction = async (quizId: string) => {
       };
     }
 
-    const { attempt, created } = await createAttemptForUserQuiz(user.id, quizId);
+    const { attempt, created } = await createAttemptForUserQuiz(
+      user.id,
+      quizId,
+    );
 
     if (!created && attempt.finishedAt) {
       return {
@@ -88,9 +91,9 @@ export const submitQuizAction = async (
       };
     }
 
-    const validationResult = buildQuizSubmissionSchema(quiz.questions).safeParse(
-      answers,
-    );
+    const validationResult = buildQuizSubmissionSchema(
+      quiz.questions,
+    ).safeParse(answers);
 
     if (!validationResult.success) {
       return {

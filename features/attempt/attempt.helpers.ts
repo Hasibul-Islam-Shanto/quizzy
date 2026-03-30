@@ -23,7 +23,11 @@ export const rankParticipantAttempts = (
 ): RankedParticipantAttempt[] => {
   const userBestAttempt = new Map<
     string,
-    { attempt: ParticipantAttemptInput; timeSpentMs: number; percentage: number }
+    {
+      attempt: ParticipantAttemptInput;
+      timeSpentMs: number;
+      percentage: number;
+    }
   >();
 
   for (const attempt of attempts) {

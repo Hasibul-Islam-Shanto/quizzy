@@ -7,6 +7,11 @@ export const checkUser = async () => {
     return null;
   }
 
+  const primaryEmail =
+    user.primaryEmailAddress?.emailAddress ??
+    user.emailAddresses[0]?.emailAddress ??
+    null;
+
   const existingUser = await prisma.user.findUnique({
     where: {
       id: user.id,
@@ -14,14 +19,23 @@ export const checkUser = async () => {
   });
 
   if (existingUser) {
-    return existingUser;
+    return prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        email: primaryEmail,
+        name: `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim() || 'User',
+        avatarUrl: user.imageUrl || '',
+      },
+    });
   }
 
   const newUser = await prisma.user.create({
     data: {
       id: user.id,
-      email: user.emailAddresses[0]?.emailAddress,
-      name: `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim(),
+      email: primaryEmail,
+      name: `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim() || 'User',
       avatarUrl: user.imageUrl || '',
     },
   });

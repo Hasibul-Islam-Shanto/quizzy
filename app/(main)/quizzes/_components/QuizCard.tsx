@@ -12,7 +12,7 @@ import QuizRedirectBtn from './QuizRedirectBtn';
 import { getDifficultyColor } from '../constants/diiffculty';
 import { IQuizListsQuiz } from '@/features/quiz/quiz.entity';
 import { User } from '@clerk/nextjs/server';
-import { getAttemptByUserIdAndQuizIdAction } from '../../attempts/action';
+import { getMyAttemptByQuizIdAction } from '../../attempts/action';
 
 const QuizCard = async ({
   quiz,
@@ -21,17 +21,14 @@ const QuizCard = async ({
   quiz: IQuizListsQuiz;
   user: User | null;
 }) => {
-  const attempt = await getAttemptByUserIdAndQuizIdAction(
-    user?.id ?? '',
-    quiz.id,
-  );
+  const attempt = user ? await getMyAttemptByQuizIdAction(quiz.id) : null;
 
   const isAuthor = user?.id === quiz.createdById;
   const hasAttempted =
-    attempt.success && attempt.attempt && attempt.attempt.userId === user?.id;
+    attempt?.success && attempt.attempt && attempt.attempt.userId === user?.id;
 
   const hasAttemptedNotFinished =
-    attempt.success &&
+    attempt?.success &&
     attempt.attempt &&
     attempt.attempt.userId === user?.id &&
     attempt.attempt.finishedAt === null;
@@ -67,7 +64,7 @@ const QuizCard = async ({
           <QuizRedirectBtn
             isAuthor={isAuthor ?? false}
             id={quiz.id}
-            attemptId={attempt.attempt?.id ?? ''}
+            attemptId={attempt?.attempt?.id ?? ''}
             hasAttempted={hasAttempted ?? false}
             hasAttemptedNotFinished={hasAttemptedNotFinished ?? false}
           />

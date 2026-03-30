@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { IQuiz } from '@/features/quiz/quiz.entity';
+import { IPublicQuiz } from '@/features/quiz/quiz.entity';
 import {
   BookOpen,
   Calendar,
@@ -18,7 +18,7 @@ import { getDifficultyColor } from '../constants/diiffculty';
 import Link from 'next/link';
 
 type QuizStartButtonProps = Pick<
-  IQuiz,
+  IPublicQuiz,
   | 'id'
   | 'title'
   | 'description'

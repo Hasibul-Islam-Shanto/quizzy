@@ -1,115 +1,184 @@
+import 'server-only';
+
 import prisma from '@/config/db.config';
-import { formatTimeSpent } from '@/lib/formatTimeSpent';
-import { IQuizAttempt } from './attempt.entity';
+import { Prisma } from '@prisma/client';
 import { IQuestion } from '../questions/questions.entity';
-
-export const createAttempt = async (userId: string, quizId: string) => {
-  const attempt = await prisma.quizAttempt.create({
-    data: {
-      userId,
-      quizId,
-      score: 0,
-      startedAt: new Date(),
-      finishedAt: null,
-    },
-  });
-  return attempt;
-};
-
-export const getAttemptById = async (id: string) => {
-  const attempt = await prisma.quizAttempt.findUnique({
-    where: { id },
-    include: {
-      answers: true,
-      quiz: {
-        include: {
-          questions: true,
-        },
-      },
-      user: true,
-    },
-  });
-  return attempt;
-};
+import { calculateScore } from '@/app/(main)/quizzes/constants/helpers';
+import {
+  rankParticipantAttempts,
+  type RankedParticipantAttempt,
+} from './attempt.helpers';
 
 export const getAttemptByUserIdAndQuizId = async (
   userId: string,
   quizId: string,
 ) => {
-  const attempt = await prisma.quizAttempt.findFirst({
-    where: { userId, quizId },
-  });
-  return attempt;
-};
-
-export const createAttemptAnswer = async (
-  attemptId: string,
-  questionId: string,
-  selected: string,
-  answer: string,
-) => {
-  const attemptAnswer = await prisma.attemptAnswer.create({
-    data: {
-      attemptId,
-      questionId,
-      selected,
-      isCorrect: selected === answer,
+  return prisma.quizAttempt.findUnique({
+    where: {
+      userId_quizId: {
+        userId,
+        quizId,
+      },
     },
   });
-  return attemptAnswer;
 };
 
-export const updateAttempt = async (
-  id: string,
-  data: Partial<IQuizAttempt> & {
-    score: number;
-    finishedAt: string;
-  },
+export const createAttemptForUserQuiz = async (
+  userId: string,
+  quizId: string,
 ) => {
-  const attempt = await prisma.quizAttempt.update({
-    where: { id },
-    data: {
-      score: data.score,
-      finishedAt: data.finishedAt,
+  try {
+    const attempt = await prisma.quizAttempt.create({
+      data: {
+        userId,
+        quizId,
+        score: 0,
+      },
+    });
+
+    return {
+      attempt,
+      created: true,
+    };
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2002'
+    ) {
+      const existingAttempt = await getAttemptByUserIdAndQuizId(userId, quizId);
+
+      if (!existingAttempt) {
+        throw error;
+      }
+
+      return {
+        attempt: existingAttempt,
+        created: false,
+      };
+    }
+
+    throw error;
+  }
+};
+
+export const submitAttempt = async ({
+  userId,
+  quizId,
+  questions,
+  answers,
+}: {
+  userId: string;
+  quizId: string;
+  questions: IQuestion[];
+  answers: Record<string, string>;
+}) => {
+  return prisma.$transaction(async tx => {
+    const attempt = await tx.quizAttempt.findUnique({
+      where: {
+        userId_quizId: {
+          userId,
+          quizId,
+        },
+      },
+    });
+
+    if (!attempt) {
+      return {
+        status: 'missing_attempt' as const,
+        attempt: null,
+      };
+    }
+
+    if (attempt.finishedAt) {
+      return {
+        status: 'already_submitted' as const,
+        attempt,
+      };
+    }
+
+    const score = calculateScore(answers, questions);
+    const finishedAt = new Date();
+
+    await tx.attemptAnswer.createMany({
+      data: questions.map(question => ({
+        attemptId: attempt.id,
+        questionId: question.id,
+        selected: answers[question.id],
+        isCorrect: answers[question.id] === question.answer,
+      })),
+      skipDuplicates: true,
+    });
+
+    const updateResult = await tx.quizAttempt.updateMany({
+      where: {
+        id: attempt.id,
+        finishedAt: null,
+      },
+      data: {
+        score,
+        finishedAt,
+      },
+    });
+
+    if (updateResult.count === 0) {
+      const existingAttempt = await tx.quizAttempt.findUnique({
+        where: { id: attempt.id },
+      });
+
+      return {
+        status: 'already_submitted' as const,
+        attempt: existingAttempt,
+      };
+    }
+
+    const updatedAttempt = await tx.quizAttempt.findUnique({
+      where: { id: attempt.id },
+    });
+
+    return {
+      status: 'submitted' as const,
+      attempt: updatedAttempt,
+    };
+  });
+};
+
+export const getOwnedAttemptById = async (userId: string, id: string) => {
+  return prisma.quizAttempt.findFirst({
+    where: {
+      id,
+      userId,
+    },
+    include: {
+      answers: true,
+      quiz: {
+        include: {
+          questions: {
+            orderBy: {
+              createdAt: 'asc',
+            },
+          },
+        },
+      },
+      user: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
     },
   });
-  return attempt;
 };
 
 export const getAllAttemptsByQuizId = async (quizId: string) => {
-  const attempts = await prisma.quizAttempt.findMany({
+  return prisma.quizAttempt.findMany({
     where: { quizId },
     include: {
       user: true,
     },
   });
-  return attempts;
 };
 
-export const createAttemptAnswers = async (
-  attemptId: string,
-  questions: IQuestion[],
-  answers: Record<string, string>,
-) => {
-  const attemptAnswers = await prisma.attemptAnswer.createMany({
-    data: questions.map(question => ({
-      attemptId,
-      questionId: question.id,
-      selected: answers[question.id],
-      isCorrect: answers[question.id] === question.answer,
-    })),
-  });
-  return attemptAnswers;
-};
-
-export type ParticipantAttempt = {
-  rank: number;
-  id: string;
-  name: string;
-  timeSpentMs: number;
-  timeSpentFormatted: string; // e.g. "2m 30s" or "45s"
-  score: number; // percentage
-};
+export type ParticipantAttempt = RankedParticipantAttempt;
 
 export const getParticipantsAttempts = async (
   quizId: string,
@@ -129,50 +198,14 @@ export const getParticipantsAttempts = async (
     },
   });
 
-  const userBestAttempt = new Map<
-    string,
-    { attempt: (typeof attempts)[0]; timeSpentMs: number; percentage: number }
-  >();
-
-  for (const a of attempts) {
-    const totalQuestions = a.quiz.questions.length;
-    const percentage =
-      totalQuestions > 0 ? Math.round((a.score / totalQuestions) * 100) : 0;
-    const timeSpentMs = a.finishedAt
-      ? new Date(a.finishedAt).getTime() - new Date(a.startedAt).getTime()
-      : 0;
-
-    const existing = userBestAttempt.get(a.userId);
-    const isBetter =
-      !existing ||
-      percentage > existing.percentage ||
-      (percentage === existing.percentage &&
-        timeSpentMs < existing.timeSpentMs);
-
-    if (isBetter) {
-      userBestAttempt.set(a.userId, {
-        attempt: a,
-        timeSpentMs,
-        percentage,
-      });
-    }
-  }
-
-  const sorted = Array.from(userBestAttempt.values())
-    .map(({ attempt, timeSpentMs, percentage }) => ({
-      id: attempt.user.id,
-      name: attempt.user.name,
-      timeSpentMs,
-      timeSpentFormatted: formatTimeSpent(timeSpentMs),
-      score: percentage,
-    }))
-    .sort((a, b) => {
-      if (b.score !== a.score) return b.score - a.score;
-      return a.timeSpentMs - b.timeSpentMs;
-    });
-
-  return sorted.map((item, index) => ({
-    ...item,
-    rank: index + 1,
-  }));
+  return rankParticipantAttempts(
+    attempts.map(attempt => ({
+      userId: attempt.user.id,
+      userName: attempt.user.name,
+      score: attempt.score,
+      totalQuestions: attempt.quiz.questions.length,
+      startedAt: new Date(attempt.startedAt),
+      finishedAt: attempt.finishedAt ? new Date(attempt.finishedAt) : null,
+    })),
+  );
 };

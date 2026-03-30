@@ -15,6 +15,19 @@ export interface IQuiz {
   attempts?: IQuizAttempt[];
 }
 
+export interface IPublicQuiz {
+  id: string;
+  title: string;
+  description: string | null;
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+  isPublished: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  createdBy?: Pick<IUser, 'id' | 'name'>;
+  createdById: string;
+  questionsCount: number;
+}
+
 export interface IAttemptAnswer {
   id: string;
   attempt: IQuizAttempt;
@@ -60,4 +73,13 @@ export interface IQuizListsQuiz {
     questions: number;
     attempts: number;
   };
+}
+
+export interface IQuizAttemptSummary {
+  id: string;
+  userId: string;
+  quizId: string;
+  score: number;
+  startedAt: Date;
+  finishedAt: Date | null;
 }

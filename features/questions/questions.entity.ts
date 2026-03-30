@@ -5,3 +5,9 @@ export interface IQuestion {
   answer: string;
   explanation: string | null;
 }
+
+export interface IQuestionForAttempt {
+  id: string;
+  question: string;
+  options: string[];
+}

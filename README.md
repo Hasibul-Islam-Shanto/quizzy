@@ -1,49 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with
-[`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Quizzy
 
-## Getting Started
+Quizzy is a Next.js App Router application for AI-assisted quiz generation, quiz publishing, quiz attempts, and leaderboards. It uses Clerk for authentication, Prisma with PostgreSQL for persistence, and Gemini for quiz generation.
 
-First, run the development server:
+## Setup
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Create a `.env` file with the required variables:
+
+```bash
+DATABASE_URL=postgresql://...
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...
+CLERK_SECRET_KEY=...
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/
+NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/
+GEMINI_API_KEY=...
+```
+
+3. Generate Prisma Client and apply migrations:
+
+```bash
+npx prisma generate
+npx prisma migrate deploy
+```
+
+4. Run the app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the
-result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page
-auto-updates as you edit the file.
+```bash
+npm run dev
+npm run build
+npm run start
+npm run lint
+npm run type-check
+npm run test:run
+npm run test:e2e
+```
 
-This project uses
-[`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts)
-to automatically optimize and load [Geist](https://vercel.com/font), a new font
-family for Vercel.
+## Architecture
 
-## Learn More
+- `app/`: App Router pages, layouts, and server actions.
+- `features/quiz/`: quiz entities, validation schemas, and repository functions.
+- `features/attempt/`: attempt persistence, ranking helpers, and attempt entities.
+- `infrastructure/ai/`: Gemini integration and AI rate limiting.
+- `infrastructure/prisma/`: Prisma schema and SQL migrations.
+- `lib/`: shared utilities such as user provisioning and formatting helpers.
 
-To learn more about Next.js, take a look at the following resources:
+## Security Model
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js
-  features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Public quiz detail pages only expose published quiz metadata.
+- Quiz attempt pages use server-only queries that never send answers or explanations to the client before submission.
+- Attempt result pages are ownership-checked against the authenticated Clerk user.
+- AI quiz generation requires authentication, validated input, and database-backed rate limiting.
+- Quiz attempts are single-attempt per user and protected by Prisma unique constraints plus transactional submission logic.
 
-You can check out
-[the Next.js GitHub repository](https://github.com/vercel/next.js) - your
-feedback and contributions are welcome!
+## Deployment Notes
 
-## Deploy on Vercel
+- Production builds use standard `next build`.
+- Prisma configuration lives in `prisma.config.ts`.
+- Apply database migrations before starting the app in production.
+- Clerk and Gemini secrets must be provided through your deployment platform secret manager.
 
-The easiest way to deploy your Next.js app is to use the
-[Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)
-from the creators of Next.js.
+## Testing
 
-Check out our
-[Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying)
-for more details.
+- Unit tests cover quiz validation, submission validation, scoring, and leaderboard ranking.
+- Playwright covers public navigation and unauthenticated access protection for protected routes.
+
+## Operational Guidance
+
+- Monitor AI generation volume and adjust limits in `infrastructure/ai/ai-rate-limit.service.ts` as usage patterns evolve.
+- Review unpublished quiz access, attempt access, and result access whenever adding new routes or server actions.
+- Prefer adding new query functions for each access mode rather than reusing broad “get by id” reads.

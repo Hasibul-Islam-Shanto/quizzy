@@ -1,72 +1,219 @@
+import 'server-only';
+
 import prisma from '@/config/db.config';
-import { currentUser } from '@clerk/nextjs/server';
-import { IQuestion } from '../questions/questions.entity';
 import { Prisma } from '@prisma/client';
+import { IQuestion } from '../questions/questions.entity';
 
-export const createQuiz = async (quizData: {
-  title: string;
-  questions: IQuestion[];
-}) => {
-  try {
-    const user = await currentUser();
-    if (!user) {
-      throw new Error('User not authenticated');
-    }
-    const quiz = await prisma.quiz.create({
-      data: {
-        title: quizData.title,
-        description: '',
-        isPublished: false,
-        createdById: user.id,
-        questions: {
-          create: quizData.questions.map(question => ({
-            question: question.question,
-            options: question.options,
-            answer: question.answer,
-            explanation: question.explanation,
-          })),
-        },
+const creatorSummarySelect = {
+  id: true,
+  name: true,
+} satisfies Prisma.UserSelect;
+
+const quizListSelect = {
+  id: true,
+  title: true,
+  description: true,
+  difficulty: true,
+  isPublished: true,
+  createdAt: true,
+  updatedAt: true,
+  createdById: true,
+  _count: {
+    select: {
+      attempts: true,
+      questions: true,
+    },
+  },
+} satisfies Prisma.QuizSelect;
+
+const publicQuizSelect = {
+  id: true,
+  title: true,
+  description: true,
+  difficulty: true,
+  isPublished: true,
+  createdAt: true,
+  updatedAt: true,
+  createdById: true,
+  createdBy: {
+    select: creatorSummarySelect,
+  },
+  _count: {
+    select: {
+      questions: true,
+    },
+  },
+} satisfies Prisma.QuizSelect;
+
+const creatorQuizSelect = {
+  id: true,
+  title: true,
+  description: true,
+  difficulty: true,
+  isPublished: true,
+  createdAt: true,
+  updatedAt: true,
+  createdById: true,
+  createdBy: {
+    select: creatorSummarySelect,
+  },
+  questions: {
+    select: {
+      id: true,
+      question: true,
+      options: true,
+      answer: true,
+      explanation: true,
+    },
+    orderBy: {
+      createdAt: 'asc',
+    },
+  },
+} satisfies Prisma.QuizSelect;
+
+const attemptQuizSelect = {
+  id: true,
+  title: true,
+  description: true,
+  difficulty: true,
+  isPublished: true,
+  createdAt: true,
+  updatedAt: true,
+  createdById: true,
+  createdBy: {
+    select: creatorSummarySelect,
+  },
+  questions: {
+    select: {
+      id: true,
+      question: true,
+      options: true,
+    },
+    orderBy: {
+      createdAt: 'asc',
+    },
+  },
+} satisfies Prisma.QuizSelect;
+
+const evaluationQuizSelect = {
+  id: true,
+  title: true,
+  difficulty: true,
+  isPublished: true,
+  questions: {
+    select: {
+      id: true,
+      question: true,
+      options: true,
+      answer: true,
+      explanation: true,
+    },
+    orderBy: {
+      createdAt: 'asc',
+    },
+  },
+} satisfies Prisma.QuizSelect;
+
+export const createQuiz = async (
+  creatorId: string,
+  quizData: {
+    title: string;
+    questions: IQuestion[];
+  },
+) => {
+  return prisma.quiz.create({
+    data: {
+      title: quizData.title,
+      description: '',
+      isPublished: false,
+      createdById: creatorId,
+      questions: {
+        create: quizData.questions.map(question => ({
+          question: question.question,
+          options: question.options,
+          answer: question.answer,
+          explanation: question.explanation,
+        })),
       },
-    });
-    return quiz;
-  } catch (error) {
-    throw error;
-  }
+    },
+  });
 };
 
-export const getQuizById = async (quizId: string) => {
-  try {
-    const quiz = await prisma.quiz.findUnique({
-      where: { id: quizId },
-      include: {
-        questions: true,
-        createdBy: { select: { name: true, id: true } },
-      },
-    });
-    return quiz;
-  } catch (error) {
-    throw error;
+export const getPublicQuiz = async (quizId: string) => {
+  const quiz = await prisma.quiz.findFirst({
+    where: {
+      id: quizId,
+      isPublished: true,
+    },
+    select: publicQuizSelect,
+  });
+
+  if (!quiz) {
+    return null;
   }
+
+  return {
+    ...quiz,
+    questionsCount: quiz._count.questions,
+  };
 };
 
-export const updateQuiz = async (
+export const getQuizForAttempt = async (quizId: string) => {
+  return prisma.quiz.findFirst({
+    where: {
+      id: quizId,
+      isPublished: true,
+    },
+    select: attemptQuizSelect,
+  });
+};
+
+export const getQuizForEvaluation = async (quizId: string) => {
+  return prisma.quiz.findFirst({
+    where: {
+      id: quizId,
+      isPublished: true,
+    },
+    select: evaluationQuizSelect,
+  });
+};
+
+export const getQuizForCreator = async (quizId: string, creatorId: string) => {
+  return prisma.quiz.findFirst({
+    where: {
+      id: quizId,
+      createdById: creatorId,
+    },
+    select: creatorQuizSelect,
+  });
+};
+
+export const publishQuiz = async (
   quizId: string,
-  updateData: Partial<{
+  creatorId: string,
+  updateData: {
     title: string;
     description: string;
     isPublished: boolean;
     difficulty: 'EASY' | 'MEDIUM' | 'HARD';
-  }>,
+  },
 ) => {
-  try {
-    const updatedQuiz = await prisma.quiz.update({
-      where: { id: quizId },
-      data: updateData,
-    });
-    return updatedQuiz;
-  } catch (error) {
-    throw error;
+  const result = await prisma.quiz.updateMany({
+    where: {
+      id: quizId,
+      createdById: creatorId,
+    },
+    data: updateData,
+  });
+
+  if (result.count === 0) {
+    return null;
   }
+
+  return prisma.quiz.findUnique({
+    where: { id: quizId },
+    select: creatorQuizSelect,
+  });
 };
 
 export const getAllQuizzes = async (filters: {
@@ -85,24 +232,26 @@ export const getAllQuizzes = async (filters: {
           mode: 'insensitive',
         },
       },
+      {
+        description: {
+          contains: filters.search.trim(),
+          mode: 'insensitive',
+        },
+      },
     ];
   }
-  if (filters?.difficulty && filters.difficulty !== 'ALL') {
+
+  if (filters.difficulty && filters.difficulty !== 'ALL') {
     where.difficulty = filters.difficulty;
   }
 
-  const quizzes = await prisma.quiz.findMany({
+  return prisma.quiz.findMany({
     where,
-    include: {
-      _count: {
-        select: {
-          attempts: true,
-          questions: true,
-        },
-      },
+    select: quizListSelect,
+    orderBy: {
+      createdAt: 'desc',
     },
   });
-  return quizzes;
 };
 
 export const getQuizStats = async (userId: string) => {
@@ -135,26 +284,34 @@ export const getQuizStats = async (userId: string) => {
 };
 
 export const getUserQuiz = async (userId: string) => {
-  const quizzes = await prisma.quiz.findMany({
+  return prisma.quiz.findMany({
     where: { createdById: userId },
-    include: {
-      _count: {
-        select: {
-          attempts: true,
-          questions: true,
-        },
-      },
+    select: quizListSelect,
+    orderBy: {
+      updatedAt: 'desc',
     },
   });
-  return quizzes;
 };
 
 export const getParticipatedQuizzes = async (userId: string) => {
-  const quizzes = await prisma.quiz.findMany({
-    where: { attempts: { some: { userId } } },
-    include: {
+  return prisma.quiz.findMany({
+    where: {
+      isPublished: true,
+      attempts: { some: { userId } },
+    },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      difficulty: true,
+      isPublished: true,
+      createdAt: true,
+      updatedAt: true,
+      createdById: true,
       _count: { select: { attempts: true } },
     },
+    orderBy: {
+      updatedAt: 'desc',
+    },
   });
-  return quizzes;
 };

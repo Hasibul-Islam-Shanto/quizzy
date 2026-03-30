@@ -1,5 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import { QuestionPromptType } from './quiz-ai.entity';
+import { generatedQuestionsSchema } from '@/features/questions/question.schema';
 
 export const generateQuestions = async ({
   prompt,
@@ -17,6 +18,10 @@ export const generateQuestions = async ({
 
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
+      config: {
+        responseMimeType: 'application/json',
+        maxOutputTokens: Math.max(512, (numQuestions || 3) * 250),
+      },
       contents: `
     You are a quiz generator. Create ${numQuestions || 3} single-choice quiz questions about "${prompt}" with difficulty "${difficulty || 'EASY'}".
 
@@ -48,7 +53,9 @@ export const generateQuestions = async ({
         .replace(/```$/, '')
         .trim();
     }
-    return JSON.parse(text!);
+
+    const parsedQuestions = JSON.parse(text!);
+    return generatedQuestionsSchema.parse(parsedQuestions);
   } catch (error) {
     console.error('Error generating questions:', error);
     throw new Error('Failed to generate quiz questions from AI service.');

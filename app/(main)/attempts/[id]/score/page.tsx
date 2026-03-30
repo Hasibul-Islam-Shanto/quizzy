@@ -1,5 +1,5 @@
 import React from 'react';
-import { getAttemptByIdAction } from '../../action';
+import { getOwnedAttemptByIdAction } from '../../action';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -47,7 +47,7 @@ const getScoreBadge = (percentage: number) => {
 
 const ScorePage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  const response = await getAttemptByIdAction(id);
+  const response = await getOwnedAttemptByIdAction(id);
 
   if (!response.success || !response.attempt) {
     return notFound();

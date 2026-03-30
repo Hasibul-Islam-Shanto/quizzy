@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { calculateScore } from '../helpers';
+import { buildQuizSubmissionSchema, calculateScore } from '../helpers';
 import type { IQuestion } from '@/features/questions/questions.entity';
 
 const createQuestion = (id: string, answer: string): IQuestion => ({
@@ -75,5 +75,25 @@ describe('calculateScore', () => {
     const questions = [createQuestion('q1', 'Answer')];
     expect(calculateScore({ q1: 'Answer' }, questions)).toBe(1);
     expect(calculateScore({ q1: ' Answer' }, questions)).toBe(0);
+  });
+
+  it('rejects submissions with missing answers', () => {
+    const questions = [createQuestion('q1', 'A'), createQuestion('q2', 'B')];
+    const result = buildQuizSubmissionSchema(questions).safeParse({ q1: 'A' });
+
+    expect(result.success).toBe(false);
+  });
+
+  it('rejects answers not present in the question options', () => {
+    const questions = [
+      {
+        ...createQuestion('q1', 'A'),
+        options: ['A', 'B', 'C', 'D'],
+      },
+    ];
+
+    const result = buildQuizSubmissionSchema(questions).safeParse({ q1: 'Z' });
+
+    expect(result.success).toBe(false);
   });
 });

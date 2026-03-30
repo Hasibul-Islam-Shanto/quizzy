@@ -14,10 +14,10 @@ const NavLink = ({ label, href }: { label: string; href: string }) => {
     <Link
       href={href}
       className={cn(
-        'rounded-md px-2 py-1 text-sm font-medium transition-colors',
+        'border-b-2 border-transparent px-2 py-1 text-sm transition-colors',
         isActive
-          ? 'bg-primary text-primary-foreground'
-          : 'text-muted-foreground hover:bg-primary/10 hover:text-foreground',
+          ? 'text-primary font-semibold'
+          : 'text-muted-foreground font-medium hover:text-foreground',
       )}
     >
       {label}

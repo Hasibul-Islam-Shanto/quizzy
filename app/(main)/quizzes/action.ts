@@ -1,14 +1,13 @@
 'use server';
 
-import {
-  createAttempt,
-  createAttemptAnswers,
-  getAttemptByUserIdAndQuizId,
-  updateAttempt,
-} from '@/features/attempt/attempt.repository';
-import { getQuizById } from '@/features/quiz/quiz.repository';
 import { currentUser } from '@clerk/nextjs/server';
-import { calculateScore } from './constants/helpers';
+import {
+  createAttemptForUserQuiz,
+  getAttemptByUserIdAndQuizId,
+  submitAttempt,
+} from '@/features/attempt/attempt.repository';
+import { getQuizForEvaluation } from '@/features/quiz/quiz.repository';
+import { buildQuizSubmissionSchema } from './constants/helpers';
 
 export const startQuizAction = async (quizId: string) => {
   try {
@@ -19,24 +18,32 @@ export const startQuizAction = async (quizId: string) => {
         message: 'User not authenticated',
       };
     }
-    const existingAttempt = await getAttemptByUserIdAndQuizId(user.id, quizId);
-    if (existingAttempt) {
+
+    const quiz = await getQuizForEvaluation(quizId);
+    if (!quiz || !quiz.isPublished) {
       return {
         success: false,
-        message: 'Attempt already exists',
+        message: 'The quiz is not available',
       };
     }
 
-    const attempt = await createAttempt(user.id, quizId);
-    if (!attempt) {
+    const { attempt, created } = await createAttemptForUserQuiz(
+      user.id,
+      quizId,
+    );
+
+    if (!created && attempt.finishedAt) {
       return {
         success: false,
-        message: 'Failed to create attempt',
+        message: 'Quiz already completed',
+        attempt,
       };
     }
+
     return {
       success: true,
       attempt,
+      message: created ? 'Quiz started successfully' : 'Resuming existing quiz',
     };
   } catch (error) {
     return {
@@ -58,6 +65,7 @@ export const submitQuizAction = async (
         message: 'User not authenticated',
       };
     }
+
     const attempt = await getAttemptByUserIdAndQuizId(user.id, quizId);
 
     if (!attempt) {
@@ -67,41 +75,54 @@ export const submitQuizAction = async (
       };
     }
 
-    const quiz = await getQuizById(quizId);
-    if (!quiz) {
+    if (attempt.finishedAt) {
+      return {
+        success: true,
+        attempt,
+        message: 'Quiz was already submitted',
+      };
+    }
+
+    const quiz = await getQuizForEvaluation(quizId);
+    if (!quiz || !quiz.isPublished) {
       return {
         success: false,
         message: 'The quiz is not available',
       };
     }
 
-    const attemptAnswers = await createAttemptAnswers(
-      attempt.id,
+    const validationResult = buildQuizSubmissionSchema(
       quiz.questions,
-      answers,
-    );
-    if (!attemptAnswers) {
+    ).safeParse(answers);
+
+    if (!validationResult.success) {
       return {
         success: false,
-        message: 'Failed to create attempt answers',
+        message: validationResult.error.issues[0]?.message ?? 'Invalid answers',
       };
     }
-    const score = calculateScore(answers, quiz.questions);
-    const updatedAttempt = await updateAttempt(attempt.id, {
-      score,
-      finishedAt: new Date().toISOString(),
+
+    const result = await submitAttempt({
+      userId: user.id,
+      quizId,
+      questions: quiz.questions,
+      answers: validationResult.data,
     });
-    if (!updatedAttempt) {
+
+    if (!result.attempt) {
       return {
         success: false,
-        message: 'Failed to update attempt',
+        message: 'You have not started the quiz',
       };
     }
 
     return {
       success: true,
-      attempt: updatedAttempt,
-      message: 'Quiz submitted successfully',
+      attempt: result.attempt,
+      message:
+        result.status === 'submitted'
+          ? 'Quiz submitted successfully'
+          : 'Quiz was already submitted',
     };
   } catch (error) {
     return {

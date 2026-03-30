@@ -1,11 +1,11 @@
 import React from 'react';
 import QuizPublishContainer from './_components/QuizPublishContainer';
-import { getQuizByIdAction } from '../actions';
+import { getCreatorQuizByIdAction } from '../actions';
 import { notFound } from 'next/navigation';
 
 const PublishQuiz = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  const response = await getQuizByIdAction(id);
+  const response = await getCreatorQuizByIdAction(id);
   if (!response.success) {
     return notFound();
   }

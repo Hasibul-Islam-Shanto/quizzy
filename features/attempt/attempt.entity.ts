@@ -20,15 +20,6 @@ export interface IQuizAttempt {
   quizId: string;
   score: number;
   startedAt: string;
-  finishedAt: string;
+  finishedAt: string | null;
   answers: IAttemptAnswer[];
-}
-export interface IAttemptAnswer {
-  id: string;
-  attempt: IQuizAttempt;
-  attemptId: string;
-  question: IQuestion;
-  questionId: string;
-  selected: string;
-  isCorrect: boolean;
 }

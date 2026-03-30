@@ -1,20 +1,29 @@
+'use server';
+
+import { currentUser } from '@clerk/nextjs/server';
 import {
-  getAttemptById,
   getAttemptByUserIdAndQuizId,
+  getOwnedAttemptById,
 } from '@/features/attempt/attempt.repository';
 
-export const getAttemptByUserIdAndQuizIdAction = async (
-  userId: string,
-  quizId: string,
-) => {
+export const getMyAttemptByQuizIdAction = async (quizId: string) => {
   try {
-    const attempt = await getAttemptByUserIdAndQuizId(userId, quizId);
+    const user = await currentUser();
+    if (!user) {
+      return {
+        success: false,
+        message: 'User not authenticated',
+      };
+    }
+
+    const attempt = await getAttemptByUserIdAndQuizId(user.id, quizId);
     if (!attempt) {
       return {
         success: false,
         message: 'Attempt not found',
       };
     }
+
     return {
       success: true,
       attempt,
@@ -27,15 +36,24 @@ export const getAttemptByUserIdAndQuizIdAction = async (
   }
 };
 
-export const getAttemptByIdAction = async (id: string) => {
+export const getOwnedAttemptByIdAction = async (id: string) => {
   try {
-    const attempt = await getAttemptById(id);
+    const user = await currentUser();
+    if (!user) {
+      return {
+        success: false,
+        message: 'User not authenticated',
+      };
+    }
+
+    const attempt = await getOwnedAttemptById(user.id, id);
     if (!attempt) {
       return {
         success: false,
         message: 'Attempt not found',
       };
     }
+
     return {
       success: true,
       attempt,

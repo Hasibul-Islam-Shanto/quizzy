@@ -1,30 +1,49 @@
 import React from 'react';
 import QuizStartedQuestions from '../../_components/QuizStartedQuestions';
 import QuizBasicDetails from '../../_components/QuizBasicDetails';
-import { getQuizByIdAction } from '@/app/(main)/quiz-builder/actions';
+import {
+  getQuizForAttemptAction,
+  getPublicQuizByIdAction,
+} from '@/app/(main)/quiz-builder/actions';
+import { getMyAttemptByQuizIdAction } from '@/app/(main)/attempts/action';
 import { notFound } from 'next/navigation';
 
 const AttemptPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  const response = await getQuizByIdAction(id);
+  const [quizResponse, attemptResponse, publicQuizResponse] = await Promise.all(
+    [
+      getQuizForAttemptAction(id),
+      getMyAttemptByQuizIdAction(id),
+      getPublicQuizByIdAction(id),
+    ],
+  );
 
-  if (!response.success || !response.quiz) {
+  if (
+    !quizResponse.success ||
+    !quizResponse.quiz ||
+    !attemptResponse.success ||
+    !attemptResponse.attempt ||
+    attemptResponse.attempt.finishedAt !== null ||
+    !publicQuizResponse.success ||
+    !publicQuizResponse.quiz
+  ) {
     return notFound();
   }
 
-  const quiz = response.quiz;
+  const quiz = quizResponse.quiz;
+  const quizSummary = publicQuizResponse.quiz;
 
   return (
     <div className="bg-gradient-soft min-h-screen pb-10">
       <div className="mx-auto max-w-4xl px-4 pt-20 sm:px-6 lg:px-8">
         <QuizBasicDetails
           quiz={{
-            title: quiz.title,
-            description: quiz.description,
-            difficulty: quiz.difficulty,
-            isPublished: quiz.isPublished,
-            createdAt: quiz.createdAt,
-            updatedAt: quiz.updatedAt,
+            title: quizSummary.title,
+            description: quizSummary.description,
+            difficulty: quizSummary.difficulty,
+            isPublished: quizSummary.isPublished,
+            createdAt: quizSummary.createdAt,
+            updatedAt: quizSummary.updatedAt,
           }}
         />
         <QuizStartedQuestions questions={quiz.questions} quizId={quiz.id!} />

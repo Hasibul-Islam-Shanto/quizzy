@@ -1,14 +1,21 @@
 'use server';
 
-import { IQuestion } from '@/features/questions/questions.entity';
+import { currentUser } from '@clerk/nextjs/server';
+import { revalidatePath } from 'next/cache';
 import {
   createQuiz,
   getAllQuizzes,
-  getQuizById,
-  updateQuiz,
+  getPublicQuiz,
+  getQuizForAttempt,
+  getQuizForCreator,
+  publishQuiz,
 } from '@/features/quiz/quiz.repository';
+import {
+  aiQuizRequestSchema,
+  createQuizPayloadSchema,
+  publishQuizSchema,
+} from '@/features/quiz/quiz.schema';
 import { generateQuestions } from '@/infrastructure/ai/quiz-ai.service';
-import { currentUser } from '@clerk/nextjs/server';
 
 export const generateQuizAction = async (data: {
   prompt: string;
@@ -16,7 +23,15 @@ export const generateQuizAction = async (data: {
   difficulty: 'EASY' | 'MEDIUM' | 'HARD';
 }) => {
   try {
-    const questions = await generateQuestions(data);
+    const user = await currentUser();
+    if (!user) {
+      return {
+        error: 'User not authenticated.',
+      };
+    }
+
+    const validatedInput = aiQuizRequestSchema.parse(data);
+    const questions = await generateQuestions(validatedInput);
     return questions;
   } catch (error) {
     return {
@@ -27,10 +42,28 @@ export const generateQuizAction = async (data: {
 
 export const createQuizAction = async (data: {
   title: string;
-  questions: IQuestion[];
+  questions: {
+    id: string;
+    question: string;
+    options: string[];
+    answer: string;
+    explanation: string | null;
+  }[];
 }) => {
   try {
-    const quiz = await createQuiz(data);
+    const user = await currentUser();
+    if (!user) {
+      return {
+        success: false,
+        error: 'User not authenticated.',
+      };
+    }
+
+    const validatedPayload = createQuizPayloadSchema.parse(data);
+    const quiz = await createQuiz(user.id, validatedPayload);
+
+    revalidatePath('/quiz-dashboard');
+
     return { success: true, quiz };
   } catch (error) {
     return {
@@ -52,14 +85,28 @@ export const publishQuizAction = async (
   try {
     const user = await currentUser();
     if (!user) {
-      throw new Error('User not authenticated.');
+      return {
+        success: false,
+        error: 'User not authenticated.',
+      };
     }
-    const quiz = await getQuizById(quizId);
-    if (!quiz || quiz.createdById !== user.id) {
-      throw new Error('Quiz not found.');
+
+    const validatedUpdate = publishQuizSchema.parse(updateData);
+    const updatedQuiz = await publishQuiz(quizId, user.id, validatedUpdate);
+
+    if (!updatedQuiz) {
+      return {
+        success: false,
+        error: 'Quiz not found.',
+      };
     }
-    await updateQuiz(quizId, updateData);
-    return { success: true };
+
+    revalidatePath('/quizzes');
+    revalidatePath('/quiz-dashboard');
+    revalidatePath(`/quizzes/${quizId}`);
+    revalidatePath(`/quiz-builder/${quizId}`);
+
+    return { success: true, quiz: updatedQuiz };
   } catch (error) {
     return {
       success: false,
@@ -68,20 +115,70 @@ export const publishQuizAction = async (
   }
 };
 
-export const getQuizByIdAction = async (id: string) => {
+export const getCreatorQuizByIdAction = async (id: string) => {
   try {
-    const quiz = await getQuizById(id);
+    const user = await currentUser();
+    if (!user) {
+      return {
+        success: false,
+        quiz: null,
+      };
+    }
+
+    const quiz = await getQuizForCreator(id, user.id);
+
     if (!quiz) {
       return {
         success: false,
         quiz: null,
       };
     }
+
     return { success: true, quiz };
   } catch (error) {
     return {
       success: false,
       error: (error as Error).message || 'Failed to get quiz.',
+    };
+  }
+};
+
+export const getPublicQuizByIdAction = async (id: string) => {
+  try {
+    const quiz = await getPublicQuiz(id);
+
+    if (!quiz) {
+      return {
+        success: false,
+        quiz: null,
+      };
+    }
+
+    return { success: true, quiz };
+  } catch (error) {
+    return {
+      success: false,
+      error: (error as Error).message || 'Failed to get quiz.',
+    };
+  }
+};
+
+export const getQuizForAttemptAction = async (id: string) => {
+  try {
+    const quiz = await getQuizForAttempt(id);
+
+    if (!quiz) {
+      return {
+        success: false,
+        quiz: null,
+      };
+    }
+
+    return { success: true, quiz };
+  } catch (error) {
+    return {
+      success: false,
+      error: (error as Error).message || 'Failed to get quiz for attempt.',
     };
   }
 };

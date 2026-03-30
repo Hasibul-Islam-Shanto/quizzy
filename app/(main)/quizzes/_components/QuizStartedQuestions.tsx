@@ -6,7 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
-import { IQuestion } from '@/features/questions/questions.entity';
+import { IQuestionForAttempt } from '@/features/questions/questions.entity';
 import { submitQuizAction } from '../action';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
@@ -15,7 +15,7 @@ const QuizStartedQuestions = ({
   questions,
   quizId,
 }: {
-  questions: IQuestion[];
+  questions: IQuestionForAttempt[];
   quizId: string;
 }) => {
   const router = useRouter();

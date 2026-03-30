@@ -43,7 +43,7 @@ const QuizBuildPromptInput = () => {
         numQuestions: data.numQuestions as number,
       });
 
-      if (response.error) {
+      if (!Array.isArray(response)) {
         console.error(response.error);
       } else {
         const newQuestions = response;

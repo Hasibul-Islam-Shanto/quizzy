@@ -2,6 +2,7 @@ import QuizzesHeader from './_components/QuizzesHeader';
 import QuizCard from './_components/QuizCard';
 import { getAllQuizzesAction } from '../quiz-builder/actions';
 import { IQuizListsQuiz } from '@/features/quiz/quiz.entity';
+import { currentUser } from '@clerk/nextjs/server';
 
 const QuizzesPage = async ({
   searchParams,
@@ -12,6 +13,7 @@ const QuizzesPage = async ({
   }>;
 }) => {
   const { difficulty, search } = await searchParams;
+  const user = await currentUser();
   let quizzes: IQuizListsQuiz[] | null = null;
   let error: string | null = null;
   try {
@@ -68,7 +70,7 @@ const QuizzesPage = async ({
             </h2>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {quizzes?.map(quiz => (
-                <QuizCard key={quiz.id} quiz={quiz!} />
+                <QuizCard key={quiz.id} quiz={quiz!} user={user} />
               ))}
             </div>
           </div>

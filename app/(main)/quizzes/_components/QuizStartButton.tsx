@@ -12,8 +12,10 @@ import {
   ListChecks,
   Play,
   User,
+  Eye,
 } from 'lucide-react';
 import { getDifficultyColor } from '../constants/diiffculty';
+import Link from 'next/link';
 
 type QuizStartButtonProps = Pick<
   IQuiz,
@@ -27,6 +29,9 @@ type QuizStartButtonProps = Pick<
 > & {
   createdBy?: { name: string };
   questionsCount: number;
+  hasAttempted: boolean;
+  hasAttemptedNotFinished: boolean;
+  attemptId: string;
 };
 
 const formatDate = (date: Date) =>
@@ -102,10 +107,24 @@ const QuizStartButton = ({ quiz }: { quiz: QuizStartButtonProps }) => {
           <ListChecks className="h-4 w-4" />
           {oneLiner}
         </p>
-        <Button variant="hero" size="lg">
-          <Play className="mr-2 h-5 w-5" />
-          Start Quiz
-        </Button>
+
+        {quiz.hasAttempted && quiz.hasAttemptedNotFinished && (
+          <Link href={`/quizzes/${quiz.id}/attempt`}>
+            <Button variant="default">
+              <Play className="mr-2 h-5 w-5" />
+              Continue Quiz
+            </Button>
+          </Link>
+        )}
+
+        {quiz.hasAttempted && !quiz.hasAttemptedNotFinished && (
+          <Link href={`/attempts/${quiz.attemptId}/score`}>
+            <Button variant="default">
+              <Eye className="mr-2 h-5 w-5" />
+              See Result
+            </Button>
+          </Link>
+        )}
       </CardContent>
     </Card>
   );

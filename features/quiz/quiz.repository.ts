@@ -104,3 +104,57 @@ export const getAllQuizzes = async (filters: {
   });
   return quizzes;
 };
+
+export const getQuizStats = async (userId: string) => {
+  const [quizCountResult, totalAttemptsResult, distinctAttendees] =
+    await Promise.all([
+      prisma.quiz.aggregate({
+        where: { createdById: userId },
+        _count: true,
+      }),
+      prisma.quizAttempt.aggregate({
+        where: {
+          quiz: { createdById: userId },
+        },
+        _count: true,
+      }),
+      prisma.quizAttempt.findMany({
+        where: {
+          quiz: { createdById: userId },
+        },
+        distinct: ['userId'],
+        select: { userId: true },
+      }),
+    ]);
+
+  return {
+    quizCount: quizCountResult._count,
+    totalAttempts: totalAttemptsResult._count,
+    totalAttendees: distinctAttendees.length,
+  };
+};
+
+export const getUserQuiz = async (userId: string) => {
+  const quizzes = await prisma.quiz.findMany({
+    where: { createdById: userId },
+    include: {
+      _count: {
+        select: {
+          attempts: true,
+          questions: true,
+        },
+      },
+    },
+  });
+  return quizzes;
+};
+
+export const getParticipatedQuizzes = async (userId: string) => {
+  const quizzes = await prisma.quiz.findMany({
+    where: { attempts: { some: { userId } } },
+    include: {
+      _count: { select: { attempts: true } },
+    },
+  });
+  return quizzes;
+};

@@ -13,7 +13,7 @@ import {
 import { useDebounce } from '@/hooks/useDebounce';
 import { Search } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 const QuizzesHeader = ({
   search,
@@ -38,6 +38,9 @@ const QuizzesHeader = ({
     [router, searchParams],
   );
 
+  const updateFiltersRef = useRef(updateFilters);
+  updateFiltersRef.current = updateFilters;
+
   const handleDifficultyChange = (value: string) => {
     updateFilters({ difficulty: value });
   };
@@ -46,9 +49,12 @@ const QuizzesHeader = ({
     setSearchValue(search);
   }, [search]);
 
+  // Only run when debounced search changes - NOT when updateFilters changes.
+  // Otherwise, when user selects a difficulty, updateFilters gets recreated,
+  // this effect runs with stale searchParams, and overwrites the URL.
   useEffect(() => {
-    updateFilters({ search: debouncedSearchValue });
-  }, [debouncedSearchValue, updateFilters]);
+    updateFiltersRef.current({ search: debouncedSearchValue });
+  }, [debouncedSearchValue]);
 
   return (
     <>

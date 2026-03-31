@@ -5,7 +5,7 @@ import QuizBuilderQuestionsContainer from './_components/QuizBuilderQuestionsCon
 const QuizBuilderPage = () => {
   return (
     <main className="bg-gradient-soft pt-20 pb-12">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <QuizBuilderHeader />
         <QuizBuildPromptInput />
         <QuizBuilderQuestionsContainer />

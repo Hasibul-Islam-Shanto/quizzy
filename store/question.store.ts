@@ -5,6 +5,7 @@ interface QuestionStore {
   questions: IQuestion[];
   setQuestions: (questions: IQuestion[]) => void;
   deleteQuestion: (index: number) => void;
+  updateQuestion: (index: number, question: IQuestion) => void;
 }
 
 export const useQuestionStore = create<QuestionStore>(set => ({
@@ -13,5 +14,11 @@ export const useQuestionStore = create<QuestionStore>(set => ({
   deleteQuestion: index =>
     set(state => ({
       questions: state.questions.filter((_, i) => i !== index),
+    })),
+  updateQuestion: (index, question) =>
+    set(state => ({
+      questions: state.questions.map((item, itemIndex) =>
+        itemIndex === index ? question : item,
+      ),
     })),
 }));

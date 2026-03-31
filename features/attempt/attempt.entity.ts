@@ -21,5 +21,6 @@ export interface IQuizAttempt {
   score: number;
   startedAt: string;
   finishedAt: string | null;
+  feedback?: unknown;
   answers: IAttemptAnswer[];
 }

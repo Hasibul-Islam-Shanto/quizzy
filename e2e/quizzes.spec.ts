@@ -64,7 +64,10 @@ test('can reset filter to All', async ({ page }) => {
 
 test('navigate from quizzes back to home', async ({ page }) => {
   await page.goto('/quizzes');
-  await page.getByRole('link', { name: /home/i }).click();
+  await page
+    .getByRole('navigation')
+    .getByRole('link', { name: 'Home' })
+    .click();
   await expect(page).toHaveURL('/');
 });
 

@@ -16,6 +16,7 @@ import {
   publishQuizSchema,
 } from '@/features/quiz/quiz.schema';
 import { generateQuestions } from '@/infrastructure/ai/quiz-ai.service';
+import { validateQuestionWithAI } from '@/infrastructure/ai/openai-quiz-learning.service';
 
 export const generateQuizAction = async (data: {
   prompt: string;
@@ -45,6 +46,7 @@ export const createQuizAction = async (data: {
   questions: {
     id: string;
     question: string;
+    topic?: string | null;
     options: string[];
     answer: string;
     explanation: string | null;
@@ -92,6 +94,43 @@ export const publishQuizAction = async (
     }
 
     const validatedUpdate = publishQuizSchema.parse(updateData);
+    const creatorQuiz = await getQuizForCreator(quizId, user.id);
+
+    if (!creatorQuiz) {
+      return {
+        success: false,
+        error: 'Quiz not found.',
+      };
+    }
+
+    if (validatedUpdate.isPublished) {
+      const validationResults = await Promise.all(
+        creatorQuiz.questions.map(question =>
+          validateQuestionWithAI({
+            input: {
+              question: question.question,
+              options: question.options,
+              correctAnswer: question.answer,
+              explanation: question.explanation ?? undefined,
+            },
+          }),
+        ),
+      );
+
+      const invalidResults = validationResults.filter(
+        result => !result.isValid,
+      );
+
+      if (invalidResults.length > 0) {
+        return {
+          success: false,
+          error:
+            'Quiz contains invalid questions. Resolve the validation issues before publishing.',
+          validationResults: invalidResults,
+        };
+      }
+    }
+
     const updatedQuiz = await publishQuiz(quizId, user.id, validatedUpdate);
 
     if (!updatedQuiz) {

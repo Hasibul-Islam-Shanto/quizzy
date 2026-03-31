@@ -61,6 +61,7 @@ const creatorQuizSelect = {
     select: {
       id: true,
       question: true,
+      topic: true,
       options: true,
       answer: true,
       explanation: true,
@@ -87,6 +88,7 @@ const attemptQuizSelect = {
     select: {
       id: true,
       question: true,
+      topic: true,
       options: true,
     },
     orderBy: {
@@ -104,6 +106,7 @@ const evaluationQuizSelect = {
     select: {
       id: true,
       question: true,
+      topic: true,
       options: true,
       answer: true,
       explanation: true,
@@ -130,6 +133,7 @@ export const createQuiz = async (
       questions: {
         create: quizData.questions.map(question => ({
           question: question.question,
+          topic: question.topic,
           options: question.options,
           answer: question.answer,
           explanation: question.explanation,

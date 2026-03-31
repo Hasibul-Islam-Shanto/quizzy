@@ -5,6 +5,7 @@ export const difficultySchema = z.enum(['EASY', 'MEDIUM', 'HARD']);
 export const questionSchema = z.object({
   id: z.string().min(1).optional().default(''),
   question: z.string().trim().min(10).max(300),
+  topic: z.string().trim().min(2).max(80).nullable().optional(),
   options: z.array(z.string().trim().min(1).max(150)).length(4),
   answer: z.string().trim().min(1).max(150),
   explanation: z.string().trim().max(500).nullable(),
@@ -25,6 +26,7 @@ export const generatedQuestionSchema = questionSchema.superRefine(
 export const questionForAttemptSchema = z.object({
   id: z.string().min(1),
   question: z.string().trim().min(10).max(300),
+  topic: z.string().trim().min(2).max(80).nullable().optional(),
   options: z.array(z.string().trim().min(1).max(150)).length(4),
 });
 

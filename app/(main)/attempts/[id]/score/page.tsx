@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { getDifficultyColor } from '@/app/(main)/quizzes/constants/diiffculty';
+import AttemptFeedbackCard from './_components/AttemptFeedbackCard';
 
 const formatDate = (date: string | Date) =>
   new Intl.DateTimeFormat('en-US', {
@@ -193,6 +194,11 @@ const ScorePage = async ({ params }: { params: Promise<{ id: string }> }) => {
             </div>
           </CardContent>
         </Card>
+
+        <AttemptFeedbackCard
+          attemptId={attempt.id}
+          initialFeedback={attempt.feedback}
+        />
       </div>
     </div>
   );

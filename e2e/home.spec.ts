@@ -9,7 +9,10 @@ test('home page loads and shows hero', async ({ page }) => {
 
 test('navigate to quizzes', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('link', { name: /quizzes/i }).click();
+  await page
+    .getByRole('navigation')
+    .getByRole('link', { name: 'Quizzes' })
+    .click();
   await expect(page).toHaveURL(/\/quizzes/);
 });
 
@@ -39,12 +42,18 @@ test('navbar logo and brand are visible', async ({ page }) => {
 
 test('navigate to Dashboard from home', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('link', { name: /dashboard/i }).click();
+  await page
+    .getByRole('navigation')
+    .getByRole('link', { name: 'Dashboard' })
+    .click();
   await expect(page).toHaveURL(/\/quiz-dashboard|sign-in/);
 });
 
 test('navigate to Leaderboard from home', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('link', { name: /leaderboard/i }).click();
+  await page
+    .getByRole('navigation')
+    .getByRole('link', { name: 'Leaderboard' })
+    .click();
   await expect(page).toHaveURL(/\/quiz-leaderboard|sign-in/);
 });

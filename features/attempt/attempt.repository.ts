@@ -169,6 +169,85 @@ export const getOwnedAttemptById = async (userId: string, id: string) => {
   });
 };
 
+export const getOwnedAttemptWithFeedbackData = async (
+  userId: string,
+  attemptId: string,
+) => {
+  return prisma.quizAttempt.findFirst({
+    where: {
+      id: attemptId,
+      userId,
+    },
+    include: {
+      answers: {
+        include: {
+          question: {
+            select: {
+              id: true,
+              question: true,
+              topic: true,
+              answer: true,
+            },
+          },
+        },
+      },
+      quiz: {
+        select: {
+          id: true,
+          title: true,
+        },
+      },
+    },
+  });
+};
+
+export const saveAttemptFeedback = async ({
+  attemptId,
+  userId,
+  feedback,
+}: {
+  attemptId: string;
+  userId: string;
+  feedback: Prisma.InputJsonValue;
+}) => {
+  const result = await prisma.quizAttempt.updateMany({
+    where: {
+      id: attemptId,
+      userId,
+      feedback: {
+        equals: Prisma.DbNull,
+      },
+    },
+    data: {
+      feedback,
+    },
+  });
+
+  if (result.count === 0) {
+    return prisma.quizAttempt.findFirst({
+      where: {
+        id: attemptId,
+        userId,
+      },
+      select: {
+        id: true,
+        feedback: true,
+      },
+    });
+  }
+
+  return prisma.quizAttempt.findFirst({
+    where: {
+      id: attemptId,
+      userId,
+    },
+    select: {
+      id: true,
+      feedback: true,
+    },
+  });
+};
+
 export const getAllAttemptsByQuizId = async (quizId: string) => {
   return prisma.quizAttempt.findMany({
     where: { quizId },

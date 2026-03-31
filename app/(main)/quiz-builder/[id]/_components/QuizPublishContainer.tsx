@@ -117,7 +117,7 @@ const QuizPublishContainer = ({ quiz }: { quiz: QuizPublishProps }) => {
       </div>
 
       {quiz?.questions?.length === 0 && <p>No questions added yet.</p>}
-      <div className="grid grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
         {quiz?.questions?.map((q, index) => (
           <QuizQuestionCard key={q.id} question={q} questionIndex={index} />
         ))}

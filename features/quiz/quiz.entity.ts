@@ -47,6 +47,7 @@ export interface IQuizAttempt {
   score: number;
   startedAt: string;
   finishedAt: string;
+  feedback?: unknown;
   answers: IAttemptAnswer[];
 }
 export interface IAttemptAnswer {

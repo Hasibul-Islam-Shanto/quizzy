@@ -38,12 +38,14 @@ const AttemptPage = async ({ params }: { params: Promise<{ id: string }> }) => {
       <div className="mx-auto max-w-4xl px-4 pt-20 sm:px-6 lg:px-8">
         <QuizBasicDetails
           quiz={{
+            id: quizSummary.id,
             title: quizSummary.title,
             description: quizSummary.description,
             difficulty: quizSummary.difficulty,
             isPublished: quizSummary.isPublished,
             createdAt: quizSummary.createdAt,
             updatedAt: quizSummary.updatedAt,
+            questionsCount: quiz.questions.length,
           }}
         />
         <QuizStartedQuestions questions={quiz.questions} quizId={quiz.id!} />

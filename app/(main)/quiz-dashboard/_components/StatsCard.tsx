@@ -9,15 +9,15 @@ const variantStyles: Record<
   { iconContainer: string; value: string }
 > = {
   primary: {
-    iconContainer: 'bg-primary/15 text-primary',
+    iconContainer: 'bg-primary/12 text-primary',
     value: 'text-primary',
   },
   secondary: {
-    iconContainer: 'bg-secondary/15 text-secondary',
+    iconContainer: 'bg-secondary/12 text-secondary',
     value: 'text-secondary',
   },
   accent: {
-    iconContainer: 'bg-[hsl(161,28%,54%)]/15 text-[hsl(161,28%,54%)]',
+    iconContainer: 'bg-[hsl(161,28%,54%)]/12 text-[hsl(161,28%,54%)]',
     value: 'text-[hsl(161,28%,54%)]',
   },
 };
@@ -26,11 +26,13 @@ const StatsCard = ({
   label,
   value,
   icon,
+  description,
   variant = 'primary',
 }: {
   label: string;
   value: string;
   icon: React.ReactNode;
+  description?: string;
   variant?: StatsCardVariant;
 }) => {
   const styles = variantStyles[variant];
@@ -38,27 +40,35 @@ const StatsCard = ({
   return (
     <Card
       className={cn(
-        'bg-gradient-card border-border/50 shadow-card gap-3 !py-2',
-        'transition-all duration-300 ease-out',
-        'hover:shadow-elegant hover:-translate-y-0.5 hover:scale-[1.02]',
+        'bg-gradient-card border-border/50 shadow-card gap-3 overflow-hidden !py-2',
+        'hover:shadow-elegant transition-shadow duration-200 ease-out',
         'cursor-default',
       )}
     >
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 px-4 pt-2">
-        <p className="text-muted-foreground text-sm font-medium">{label}</p>
+      <CardHeader className="flex flex-row items-start justify-between space-y-0 px-4 pt-3">
+        <div className="space-y-1">
+          <p className="text-muted-foreground text-xs font-semibold tracking-[0.18em] uppercase">
+            {label}
+          </p>
+          {description ? (
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              {description}
+            </p>
+          ) : null}
+        </div>
         <div
           className={cn(
-            'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
+            'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-sm',
             styles.iconContainer,
           )}
         >
           {icon}
         </div>
       </CardHeader>
-      <CardContent className="px-4 pt-0 pb-4">
+      <CardContent className="px-4 pt-1 pb-4">
         <p
           className={cn(
-            'text-2xl font-bold tracking-tight tabular-nums md:text-3xl',
+            'text-3xl font-bold tracking-tight tabular-nums md:text-4xl',
             styles.value,
           )}
         >

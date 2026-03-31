@@ -1,6 +1,6 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Eye, Loader2, Play } from 'lucide-react';
+import { Eye, Loader2, Play } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useTransition } from 'react';
@@ -39,17 +39,20 @@ const QuizRedirectBtn = ({
 
   if (isAuthor) {
     return (
-      <Link href={`/quizzes/${id}`} className="pt-2">
-        <Button className="w-full" variant="default">
-          See Details
-          <ArrowRight className="mr-2 h-4 w-4" />
-        </Button>
-      </Link>
+      <div className="pt-1">
+        <Link href={`/quizzes/${id}`} className="block w-full">
+          <Button className="w-full" variant="outline">
+            <Eye className="mr-2 h-4 w-4" />
+            View Details
+          </Button>
+        </Link>
+      </div>
     );
   }
+
   if (!isAuthor && hasAttempted) {
     return (
-      <div className="flex w-full items-center justify-center gap-5">
+      <div className="grid w-full gap-3 sm:grid-cols-2">
         <Link href={`/quizzes/${id}`} className="w-full">
           <Button className="w-full" variant="outline">
             <Eye className="mr-2 h-4 w-4" />
@@ -75,36 +78,34 @@ const QuizRedirectBtn = ({
     );
   }
   return (
-    <>
-      <div className="flex w-full items-center justify-center gap-5">
-        <Link href={`/quizzes/${id}`} className="w-full">
-          <Button className="w-full" variant="outline">
-            <Eye className="mr-2 h-4 w-4" />
-            See Details
-          </Button>
-        </Link>
-        <div className="w-full">
-          <Button
-            className="w-full"
-            variant="default"
-            onClick={handleStartQuiz}
-            disabled={isStartingQuiz}
-          >
-            {isStartingQuiz ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Starting Quiz...
-              </>
-            ) : (
-              <>
-                <Play className="mr-2 h-4 w-4" />
-                Start Quiz
-              </>
-            )}
-          </Button>
-        </div>
+    <div className="grid w-full gap-3 sm:grid-cols-2">
+      <Link href={`/quizzes/${id}`} className="w-full">
+        <Button className="w-full" variant="outline">
+          <Eye className="mr-2 h-4 w-4" />
+          See Details
+        </Button>
+      </Link>
+      <div className="w-full">
+        <Button
+          className="w-full"
+          variant="default"
+          onClick={handleStartQuiz}
+          disabled={isStartingQuiz}
+        >
+          {isStartingQuiz ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Starting Quiz...
+            </>
+          ) : (
+            <>
+              <Play className="mr-2 h-4 w-4" />
+              Start Quiz
+            </>
+          )}
+        </Button>
       </div>
-    </>
+    </div>
   );
 };
 

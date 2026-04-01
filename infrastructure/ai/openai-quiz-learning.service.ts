@@ -222,18 +222,18 @@ const createStructuredCompletion = async <T>({
           temperature: 0,
         },
         contents: `
-System:
-${systemPrompt}
+       System:
+       ${systemPrompt}
 
-Return only valid JSON.
-Return a single JSON object at the root.
-Use exactly the fields required by the target schema.
-Do not wrap the JSON in markdown fences.
-Do not nest the payload under another key like "${schemaName}" or "data".
+        Return only valid JSON.
+        Return a single JSON object at the root.
+        Use exactly the fields required by the target schema.
+        Do not wrap the JSON in markdown fences.
+        Do not nest the payload under another key like "${schemaName}" or "data".
 
-User Input:
-${userPrompt}
-`,
+      User Input:
+      ${userPrompt}
+                  `,
       });
 
       const text = response?.text?.trim();

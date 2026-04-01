@@ -84,3 +84,10 @@ export interface IQuizAttemptSummary {
   startedAt: Date;
   finishedAt: Date | null;
 }
+
+export type IQuizAnalytics = {
+  avgScore: number;
+  completionRate: number;
+  hardestQuestions: { questionId: string; correctRate: number }[];
+  avgTime: number;
+};

@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { IQuestion } from '@/features/questions/questions.entity';
-import { CheckCircle2, HelpCircle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { CheckCircle2, HelpCircle, Lightbulb, ListChecks } from 'lucide-react';
 
 type QuizQuestionsProps = {
   questions: IQuestion[];
@@ -16,17 +17,29 @@ const QuizQuestionItem = ({
 }) => (
   <Card className="bg-gradient-card border-border/50 shadow-card">
     <CardContent className="pt-6">
-      <div className="flex items-start gap-3">
-        <div className="bg-primary/10 text-primary flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold">
+      <div className="flex items-start gap-4">
+        <div className="bg-primary/10 text-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-sm font-semibold">
           {index + 1}
         </div>
         <div className="min-w-0 flex-1 space-y-3">
-          <p className="text-foreground font-medium">{question.question}</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="outline" className="rounded-full">
+              Question {index + 1}
+            </Badge>
+            <Badge variant="secondary" className="rounded-full">
+              {question.options.length} options
+            </Badge>
+          </div>
+
+          <p className="text-foreground text-base leading-relaxed font-medium">
+            {question.question}
+          </p>
+
           <div className="space-y-2">
             {question.options.map((option, optionIndex) => (
               <div
                 key={optionIndex}
-                className={`flex items-center gap-2 rounded-md border px-3 py-2 text-sm ${
+                className={`flex items-start gap-2 rounded-xl border px-3 py-3 text-sm ${
                   option === question.answer
                     ? 'border-primary/50 bg-primary/5 text-foreground'
                     : 'border-border/50 bg-muted/30 text-muted-foreground'
@@ -37,7 +50,7 @@ const QuizQuestionItem = ({
                 ) : (
                   <HelpCircle className="text-muted-foreground h-4 w-4 shrink-0" />
                 )}
-                {option}
+                <span className="min-w-0 flex-1">{option}</span>
                 {option === question.answer && (
                   <span className="text-primary ml-auto text-xs font-medium">
                     Correct
@@ -46,10 +59,17 @@ const QuizQuestionItem = ({
               </div>
             ))}
           </div>
+
           {question.explanation && (
-            <p className="text-muted-foreground border-border/50 border-t pt-3 text-sm">
-              {question.explanation}
-            </p>
+            <div className="border-secondary/10 bg-secondary/5 rounded-xl border p-3">
+              <div className="text-secondary mb-2 flex items-center gap-2 text-sm font-medium">
+                <Lightbulb className="h-4 w-4" />
+                Explanation
+              </div>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                {question.explanation}
+              </p>
+            </div>
           )}
         </div>
       </div>
@@ -63,12 +83,17 @@ const QuizQuestions = ({ questions, quizTitle }: QuizQuestionsProps) => {
       <Card className="bg-gradient-card border-border/50 shadow-card">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
-            <HelpCircle className="text-primary h-5 w-5" />
+            <ListChecks className="text-primary h-5 w-5" />
             Questions for &quot;{quizTitle}&quot;
           </CardTitle>
-          <p className="text-muted-foreground text-sm">
-            You created this quiz. Here are all {questions.length} questions.
-          </p>
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="text-muted-foreground text-sm">
+              You created this quiz. Here are all {questions.length} questions.
+            </p>
+            <Badge variant="secondary" className="rounded-full">
+              {questions.length} total
+            </Badge>
+          </div>
         </CardHeader>
       </Card>
 

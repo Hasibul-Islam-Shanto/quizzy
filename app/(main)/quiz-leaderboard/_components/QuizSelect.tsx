@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { BookOpenCheck } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 type Quiz = { id: string; title: string };
@@ -34,7 +35,8 @@ export const QuizSelect = ({
       value={currentQuizId ?? quizzes[0]?.id ?? ''}
       onValueChange={handleChange}
     >
-      <SelectTrigger className="w-48">
+      <SelectTrigger className="bg-background/80 border-border/50 h-10 w-full rounded-lg sm:w-72">
+        <BookOpenCheck className="text-muted-foreground h-4 w-4" />
         <SelectValue placeholder="Select Quiz" />
       </SelectTrigger>
       <SelectContent>

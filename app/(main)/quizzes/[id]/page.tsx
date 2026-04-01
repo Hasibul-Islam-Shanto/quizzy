@@ -20,7 +20,9 @@ const QuizPage = async ({ params }: { params: Promise<{ id: string }> }) => {
     return (
       <div className="bg-gradient-soft min-h-screen pb-10">
         <div className="mx-auto max-w-4xl px-4 pt-20 sm:px-6 lg:px-8">
-          <QuizBasicDetails quiz={quiz} />
+          <QuizBasicDetails
+            quiz={{ ...quiz, questionsCount: quiz.questions.length }}
+          />
           <QuizQuestions questions={quiz.questions} quizTitle={quiz.title} />
         </div>
       </div>

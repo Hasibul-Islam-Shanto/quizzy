@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { ArrowLeft, ArrowRight, Loader2, ListChecks } from 'lucide-react';
 import { IQuestionForAttempt } from '@/features/questions/questions.entity';
 import { submitQuizAction } from '../action';
 import { toast } from 'sonner';
@@ -57,22 +58,38 @@ const QuizStartedQuestions = ({
   };
 
   return (
-    <div className="space-y-3">
-      <div className="bg-card rounded-xl p-5">
-        <div className="mb-2 flex items-center justify-between">
-          <span className="text-sm font-medium">
-            Question {currentQuestion + 1} of {questions.length}
-          </span>
-          <span className="text-muted-foreground text-sm">
-            {questionPercentageCompleted}% Complete
-          </span>
-        </div>
-        <Progress value={questionPercentageCompleted} className="h-2" />
-      </div>
+    <div className="space-y-4">
+      <Card className="bg-gradient-card border-border/50 shadow-card">
+        <CardContent className="p-5">
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-foreground flex items-center gap-2 text-sm font-medium">
+                <ListChecks className="text-primary h-4 w-4" />
+                Question {currentQuestion + 1} of {questions.length}
+              </p>
+              <p className="text-muted-foreground mt-1 text-sm">
+                Answer each question carefully before submitting.
+              </p>
+            </div>
+            <Badge variant="secondary" className="rounded-full">
+              {questionPercentageCompleted}% Complete
+            </Badge>
+          </div>
+          <Progress value={questionPercentageCompleted} className="h-2.5" />
+        </CardContent>
+      </Card>
 
       <Card className="bg-gradient-card border-border/50 shadow-card mb-6">
-        <CardHeader>
-          <CardTitle className="text-base">
+        <CardHeader className="space-y-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="outline" className="rounded-full">
+              Question {currentQuestion + 1}
+            </Badge>
+            <Badge variant="secondary" className="rounded-full">
+              {questions[currentQuestion]?.options?.length ?? 0} options
+            </Badge>
+          </div>
+          <CardTitle className="text-lg leading-relaxed">
             {questions[currentQuestion]?.question}
           </CardTitle>
         </CardHeader>
@@ -82,27 +99,37 @@ const QuizStartedQuestions = ({
             onValueChange={value =>
               handleAnswerSelect(questions[currentQuestion]?.id, value)
             }
-            className="space-y-2"
+            className="space-y-3"
           >
-            {questions[currentQuestion]?.options?.map((option, index) => (
-              <div
-                key={index}
-                className="bg-background/50 hover:bg-background/70 transition-smooth flex items-center space-x-3 rounded-lg p-2"
-              >
-                <RadioGroupItem value={option} id={`option-${index}`} />
+            {questions[currentQuestion]?.options?.map((option, index) => {
+              const optionId = `option-${currentQuestion}-${index}`;
+              const isSelected =
+                answers[questions[currentQuestion]?.id] === option;
+
+              return (
                 <Label
-                  htmlFor={`option-${index}`}
-                  className="flex-1 cursor-pointer text-sm"
+                  key={index}
+                  htmlFor={optionId}
+                  className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-all ${
+                    isSelected
+                      ? 'border-primary/40 bg-primary/5'
+                      : 'border-border/50 bg-background/70 hover:bg-background/90'
+                  }`}
                 >
-                  {option}
+                  <RadioGroupItem
+                    value={option}
+                    id={optionId}
+                    className="mt-0.5"
+                  />
+                  <span className="text-sm leading-relaxed">{option}</span>
                 </Label>
-              </div>
-            ))}
+              );
+            })}
           </RadioGroup>
         </CardContent>
       </Card>
 
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <Button
           onClick={handlePrevious}
           disabled={currentQuestion === 0}
@@ -112,20 +139,20 @@ const QuizStartedQuestions = ({
           Previous
         </Button>
 
-        <div className="flex gap-2">
-          {questions.map((_, index) => (
+        <div className="flex flex-wrap gap-2">
+          {questions.map((question, index) => (
             <Button
               key={index}
               variant={
                 index === currentQuestion
                   ? 'default'
-                  : answers[questions[index]?.id] !== undefined
+                  : answers[question?.id] !== undefined
                     ? 'secondary'
                     : 'outline'
               }
               size="sm"
               onClick={() => setCurrentQuestion(index)}
-              className="h-10 w-10 p-0"
+              className="h-9 w-9 rounded-full p-0"
             >
               {index + 1}
             </Button>
@@ -135,7 +162,7 @@ const QuizStartedQuestions = ({
         {currentQuestion === questions.length - 1 ? (
           <Button
             onClick={handleSubmitQuiz}
-            variant="default"
+            variant="hero"
             disabled={
               Object.keys(answers).length !== totalQuestions ||
               isStartSubmitting

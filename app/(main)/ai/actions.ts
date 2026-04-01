@@ -17,7 +17,7 @@ import {
   refineQuestionWithAI,
   validateQuestionWithAI,
 } from '@/infrastructure/ai/openai-quiz-learning.service';
-import { getQuizAnalytics } from '@/features/quiz/quiz.analytics';
+import { getQuizAnalytics } from '@/features/quiz/quiz.repository';
 
 export const generateFeedback = async (attemptId: string) => {
   try {
